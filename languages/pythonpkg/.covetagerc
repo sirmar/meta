@@ -1,0 +1,10 @@
+[run]
+branch = false
+
+[report]
+include =
+    **/pkgname/**
+
+exclude_lines =
+    pragma: no cover
+    def __repr__
