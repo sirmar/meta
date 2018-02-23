@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log"
 )
 
 type Python struct {
-	pkgname string
+	name string
 	image string
 	volume string
 	runner *Runner
@@ -16,7 +17,7 @@ func (p* Python) Install() {
 }
 
 func (p* Python) Build() {
-	fmt.Println("Building not supported in python")
+	log.Println("Building not supported in python")
 }
 
 func (p* Python) Test() {
@@ -24,11 +25,17 @@ func (p* Python) Test() {
 }
 
 func (p* Python) Lint() {
-	p.runner.Run([]string{"run", "-v", p.volume, p.image, "flake8", "setup.py", "test", p.pkgname})
+	p.runner.Run([]string{"run", "-v", p.volume, p.image, "flake8", "setup.py", "test", p.name})
 }
 
 func (p* Python) Coverage() {
 	p.runner.Run([]string{"run", "-v", p.volume, p.image, "nosetests", "--with-coverage", "test"})
+}
+
+func (p* Python) CI() {
+	p.Install()
+	p.Lint()
+	p.Coverage()
 }
 
 func NewPython(root *Root, config *Config) *Python {
