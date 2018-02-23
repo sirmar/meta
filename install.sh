@@ -17,11 +17,12 @@ docker run --rm \
        -w /go/src/app \
        -v "$DIR"/.cache:/go \
        -v "$DIR":/go/src/app \
+       -v "$DIR"/bin:/go/bin \
        -e GOOS=darwin \
        -e GOARCH=386 \
        meta:latest \
-       go build
+       go build -o /go/bin/meta
 
 if [ ! -f /usr/local/bin/meta ]; then
-    ln -sf ~/Code/meta/app /usr/local/bin/meta
+    ln -sf ~/Code/meta/bin/meta /usr/local/bin/meta
 fi

@@ -19,8 +19,6 @@ func (g* Golang) Install() {
 		"-w", "/go/src/app",
 		"-v", g.cacheVolume,
 		"-v", g.srcVolume,
-		"-e", "GOOS=darwin",
-		"-e", "GOARCH=386",
 		g.image,
 		"go", "get", "-v", "-d"})
 }
@@ -31,8 +29,6 @@ func (g* Golang) Build() {
 		"-w", "/go/src/app",
 		"-v", g.cacheVolume,
 		"-v", g.srcVolume,
-		"-e", "GOOS=darwin",
-		"-e", "GOARCH=386",
 		g.image,
 		"go", "build"})
 }
