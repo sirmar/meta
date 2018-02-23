@@ -1,5 +1,5 @@
-FROM golang:1.8-alpine
+FROM golang:1.9-alpine
 
 RUN apk add --update --no-cache git
 
-WORKDIR /go/src/app
+WORKDIR /go/src/meta

@@ -15,6 +15,7 @@ func NewParser(language Language) {
 	coverage := parser.NewCommand("coverage", "coverage help")
 	lint := parser.NewCommand("lint", "lint help")
 	ci := parser.NewCommand("ci", "ci help")
+	run := parser.NewCommand("run", "run help")
 
 	create := parser.NewCommand("create", "create help")
 	python := create.NewCommand("python", "python help")
@@ -39,6 +40,8 @@ func NewParser(language Language) {
 		language.Coverage()
 	} else if ci.Happened() {
 		language.CI()
+	} else if run.Happened() {
+		language.Run()
 	} else if create.Happened() {
 		if python.Happened() {
 			log.Println("create python")

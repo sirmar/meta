@@ -11,6 +11,7 @@ type Language interface {
 	Lint()
 	Coverage()
 	CI()
+	Run()
 }
 
 func NewLanguage(root *Root, config *Config) Language {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"fmt"
 	"log"
 	"path"
 	"path/filepath"
@@ -19,12 +18,10 @@ func NewRoot() *Root {
 }
 
 func (r *Root) MoveToRoot() {
-	fmt.Println("Moving to", r.Root, "\n")
 	os.Chdir(r.Root)
 }
 
 func (r *Root) MoveToCwd() {
-	fmt.Println("\nMoving to", r.Cwd)
 	os.Chdir(r.Cwd)
 }
 

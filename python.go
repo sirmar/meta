@@ -13,7 +13,10 @@ type Python struct {
 }
 
 func (p* Python) Install() {
-	p.runner.Run([]string{"build", ".", "--tag", p.image})
+	p.runner.Run([]string{
+		"build",
+		".",
+		"--tag", p.image})
 }
 
 func (p* Python) Build() {
@@ -21,21 +24,36 @@ func (p* Python) Build() {
 }
 
 func (p* Python) Test() {
-	p.runner.Run([]string{"run", "-v", p.volume, p.image, "nosetests", "test"})
+	p.runner.Run([]string{
+		"run",
+		"-v", p.volume,
+		p.image,
+		"nosetests", "test"})
 }
 
 func (p* Python) Lint() {
-	p.runner.Run([]string{"run", "-v", p.volume, p.image, "flake8", "setup.py", "test", p.name})
+	p.runner.Run([]string{
+		"run",
+		"-v", p.volume,
+		p.image,
+		"flake8", "setup.py", "test", p.name})
 }
 
 func (p* Python) Coverage() {
-	p.runner.Run([]string{"run", "-v", p.volume, p.image, "nosetests", "--with-coverage", "test"})
+	p.runner.Run([]string{
+		"run",
+		"-v", p.volume,
+		p.image,
+		"nosetests", "--with-coverage", "test"})
 }
 
 func (p* Python) CI() {
 	p.Install()
 	p.Lint()
 	p.Coverage()
+}
+
+func (p* Python) Run() {
 }
 
 func NewPython(root *Root, config *Config) *Python {
