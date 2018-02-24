@@ -5,12 +5,10 @@ import (
 )
 
 type Golang struct {
-	name        string
-	image       string
-	workDir     string
-	cacheVolume string
-	srcVolume   string
-	runner      *Runner
+	name      string
+	image     string
+	srcVolume string
+	runner    *Runner
 }
 
 func (g *Golang) Install() {
@@ -18,21 +16,11 @@ func (g *Golang) Install() {
 		"build",
 		".",
 		"--tag", g.image})
-
-	g.runner.Run([]string{
-		"run",
-		"-w", g.workDir,
-		"-v", g.cacheVolume,
-		"-v", g.srcVolume,
-		g.image,
-		"go", "get", "-v", "-d"})
 }
 
 func (g *Golang) Build() {
 	g.runner.Run([]string{
 		"run",
-		"-w", g.workDir,
-		"-v", g.cacheVolume,
 		"-v", g.srcVolume,
 		g.image,
 		"go", "build"})
@@ -41,8 +29,6 @@ func (g *Golang) Build() {
 func (g *Golang) Test() {
 	g.runner.Run([]string{
 		"run",
-		"-w", g.workDir,
-		"-v", g.cacheVolume,
 		"-v", g.srcVolume,
 		g.image,
 		"go", "test"})
@@ -51,16 +37,12 @@ func (g *Golang) Test() {
 func (g *Golang) Lint() {
 	g.runner.Run([]string{
 		"run",
-		"-w", g.workDir,
-		"-v", g.cacheVolume,
 		"-v", g.srcVolume,
 		g.image,
 		"go", "vet"})
 
 	g.runner.Run([]string{
 		"run",
-		"-w", g.workDir,
-		"-v", g.cacheVolume,
 		"-v", g.srcVolume,
 		g.image,
 		"go", "fmt"})
@@ -69,8 +51,6 @@ func (g *Golang) Lint() {
 func (g *Golang) Coverage() {
 	g.runner.Run([]string{
 		"run",
-		"-w", g.workDir,
-		"-v", g.cacheVolume,
 		"-v", g.srcVolume,
 		g.image,
 		"go", "test", "-cover"})
@@ -86,16 +66,11 @@ func (g *Golang) CI() {
 func (g *Golang) Run() {
 	g.runner.Run([]string{
 		"run",
-		"-w", g.workDir,
-		"-v", g.srcVolume,
-		g.image,
-		"meta"})
+		g.image})
 }
 
 func NewGolang(root *Root, config *Config) *Golang {
-	workDir := fmt.Sprintf("/go/src/%s", config.Name)
-	cacheVolume := fmt.Sprintf("%s/.cache:/go", root.Root)
 	srcVolume := fmt.Sprintf("%s:/go/src/%s", root.Root, config.Name)
 	runner := NewRunner(root, "docker")
-	return &Golang{config.Name, config.Name, workDir, cacheVolume, srcVolume, runner}
+	return &Golang{config.Name, config.Name, srcVolume, runner}
 }

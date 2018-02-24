@@ -1,11 +1,13 @@
 FROM python:3-alpine
 
+# Os dependencies
+# RUN apk add --update --no-cache \
+
 WORKDIR /usr/src/app
 
+# Python dev dependencies
 RUN pip install --no-cache-dir nose coverage flake8
 
-COPY requirements.txt ./
+# Python production dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-RUN pip install -e .
