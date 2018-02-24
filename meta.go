@@ -9,7 +9,7 @@ type logWriter struct {
 }
 
 func (w logWriter) Write(bytes []byte) (int, error) {
-	return fmt.Print(string(bytes))
+	return fmt.Print("Meta: ", string(bytes))
 }
 
 func main() {
