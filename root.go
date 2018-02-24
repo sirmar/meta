@@ -1,15 +1,15 @@
 package main
 
 import (
-	"os"
 	"log"
+	"os"
 	"path"
 	"path/filepath"
 )
 
 type Root struct {
 	Root string
-	Cwd string
+	Cwd  string
 }
 
 func NewRoot() *Root {
@@ -28,7 +28,7 @@ func (r *Root) MoveToCwd() {
 func find(currentDir string) string {
 	metaFilePath := path.Join(currentDir, ".meta", "meta.yml")
 	if _, err := os.Stat(metaFilePath); err == nil {
-		return currentDir;
+		return currentDir
 	}
 	if currentDir == "/" {
 		log.Fatal("Meta not found!")

@@ -1,18 +1,18 @@
 package main
 
 import (
-	"log"
-	"io/ioutil"
 	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"log"
 )
 
 type Config struct {
-    Name string
-    Language string
+	Name     string
+	Language string
 }
 
 func NewConfig() *Config {
-	data, err := ioutil.ReadFile(".meta/meta.yml");
+	data, err := ioutil.ReadFile(".meta/meta.yml")
 	if err != nil {
 		log.Fatal(err)
 	}

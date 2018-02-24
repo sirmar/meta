@@ -1,15 +1,15 @@
 package main
 
 import (
-	"log"
 	"fmt"
+	"log"
 )
 
 type logWriter struct {
 }
 
 func (w logWriter) Write(bytes []byte) (int, error) {
-    return fmt.Print(string(bytes))
+	return fmt.Print(string(bytes))
 }
 
 func main() {

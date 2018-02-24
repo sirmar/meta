@@ -5,15 +5,15 @@ import (
 )
 
 type Golang struct {
-	name string
-	image string
-	workDir string
+	name        string
+	image       string
+	workDir     string
 	cacheVolume string
-	srcVolume string
-	runner *Runner
+	srcVolume   string
+	runner      *Runner
 }
 
-func (g* Golang) Install() {
+func (g *Golang) Install() {
 	g.runner.Run([]string{
 		"build",
 		".",
@@ -28,7 +28,7 @@ func (g* Golang) Install() {
 		"go", "get", "-v", "-d"})
 }
 
-func (g* Golang) Build() {
+func (g *Golang) Build() {
 	g.runner.Run([]string{
 		"run",
 		"-w", g.workDir,
@@ -38,7 +38,7 @@ func (g* Golang) Build() {
 		"go", "build"})
 }
 
-func (g* Golang) Test() {
+func (g *Golang) Test() {
 	g.runner.Run([]string{
 		"run",
 		"-w", g.workDir,
@@ -48,16 +48,38 @@ func (g* Golang) Test() {
 		"go", "test"})
 }
 
-func (g* Golang) Lint() {
+func (g *Golang) Lint() {
+	g.runner.Run([]string{
+		"run",
+		"-w", g.workDir,
+		"-v", g.cacheVolume,
+		"-v", g.srcVolume,
+		g.image,
+		"go", "vet"})
+
+	g.runner.Run([]string{
+		"run",
+		"-w", g.workDir,
+		"-v", g.cacheVolume,
+		"-v", g.srcVolume,
+		g.image,
+		"go", "fmt"})
 }
 
-func (g* Golang) Coverage() {
+func (g *Golang) Coverage() {
+	g.runner.Run([]string{
+		"run",
+		"-w", g.workDir,
+		"-v", g.cacheVolume,
+		"-v", g.srcVolume,
+		g.image,
+		"go", "test", "-cover"})
 }
 
-func (g* Golang) CI() {
+func (g *Golang) CI() {
 }
 
-func (g* Golang) Run() {
+func (g *Golang) Run() {
 	g.runner.Run([]string{
 		"run",
 		"-w", g.workDir,

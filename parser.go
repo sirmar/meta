@@ -32,7 +32,7 @@ func NewParser(language Language) {
 		language.Install()
 	} else if build.Happened() {
 		language.Build()
-	} else  if test.Happened() {
+	} else if test.Happened() {
 		language.Test()
 	} else if lint.Happened() {
 		language.Lint()

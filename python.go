@@ -6,24 +6,24 @@ import (
 )
 
 type Python struct {
-	name string
-	image string
+	name   string
+	image  string
 	volume string
 	runner *Runner
 }
 
-func (p* Python) Install() {
+func (p *Python) Install() {
 	p.runner.Run([]string{
 		"build",
 		".",
 		"--tag", p.image})
 }
 
-func (p* Python) Build() {
+func (p *Python) Build() {
 	log.Println("Building not supported in python")
 }
 
-func (p* Python) Test() {
+func (p *Python) Test() {
 	p.runner.Run([]string{
 		"run",
 		"-v", p.volume,
@@ -31,7 +31,7 @@ func (p* Python) Test() {
 		"nosetests", "test"})
 }
 
-func (p* Python) Lint() {
+func (p *Python) Lint() {
 	p.runner.Run([]string{
 		"run",
 		"-v", p.volume,
@@ -39,7 +39,7 @@ func (p* Python) Lint() {
 		"flake8", "setup.py", "test", p.name})
 }
 
-func (p* Python) Coverage() {
+func (p *Python) Coverage() {
 	p.runner.Run([]string{
 		"run",
 		"-v", p.volume,
@@ -47,13 +47,13 @@ func (p* Python) Coverage() {
 		"nosetests", "--with-coverage", "test"})
 }
 
-func (p* Python) CI() {
+func (p *Python) CI() {
 	p.Install()
 	p.Lint()
 	p.Coverage()
 }
 
-func (p* Python) Run() {
+func (p *Python) Run() {
 }
 
 func NewPython(root *Root, config *Config) *Python {

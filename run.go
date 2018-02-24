@@ -12,7 +12,7 @@ import (
 
 type Runner struct {
 	root *Root
-	cmd string
+	cmd  string
 }
 
 func (r *Runner) Run(args []string) {
