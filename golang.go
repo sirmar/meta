@@ -77,6 +77,10 @@ func (g *Golang) Coverage() {
 }
 
 func (g *Golang) CI() {
+	g.Install()
+	g.Build()
+	g.Lint()
+	g.Coverage()
 }
 
 func (g *Golang) Run() {
