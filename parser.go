@@ -4,6 +4,7 @@ import (
 	"github.com/akamensky/argparse"
 	"log"
 	"os"
+	"strings"
 )
 
 func NewParser(language Language) {
@@ -15,7 +16,9 @@ func NewParser(language Language) {
 	coverage := parser.NewCommand("coverage", "coverage help")
 	lint := parser.NewCommand("lint", "lint help")
 	ci := parser.NewCommand("ci", "ci help")
+
 	run := parser.NewCommand("run", "run help")
+	runCmd := run.String("c", "command", &argparse.Options{Required: true, Help: "Command to run inside docker container"})
 
 	create := parser.NewCommand("create", "create help")
 	python := create.NewCommand("python", "python help")
@@ -41,7 +44,7 @@ func NewParser(language Language) {
 	} else if ci.Happened() {
 		language.CI()
 	} else if run.Happened() {
-		language.Run()
+		language.Run(strings.Split(*runCmd, " "))
 	} else if create.Happened() {
 		if python.Happened() {
 			log.Println("create python")

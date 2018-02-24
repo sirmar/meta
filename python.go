@@ -6,10 +6,10 @@ import (
 )
 
 type Python struct {
-	name   string
-	image  string
-	volume string
-	runner *Runner
+	name      string
+	image     string
+	srcVolume string
+	runner    *Runner
 }
 
 func (p *Python) Install() {
@@ -26,7 +26,7 @@ func (p *Python) Build() {
 func (p *Python) Test() {
 	p.runner.Run([]string{
 		"run",
-		"-v", p.volume,
+		"-v", p.srcVolume,
 		p.image,
 		"nosetests", "test"})
 }
@@ -34,7 +34,7 @@ func (p *Python) Test() {
 func (p *Python) Lint() {
 	p.runner.Run([]string{
 		"run",
-		"-v", p.volume,
+		"-v", p.srcVolume,
 		p.image,
 		"flake8", "setup.py", "test", p.name})
 }
@@ -42,7 +42,7 @@ func (p *Python) Lint() {
 func (p *Python) Coverage() {
 	p.runner.Run([]string{
 		"run",
-		"-v", p.volume,
+		"-v", p.srcVolume,
 		p.image,
 		"nosetests", "--with-coverage", "test"})
 }
@@ -53,11 +53,16 @@ func (p *Python) CI() {
 	p.Coverage()
 }
 
-func (p *Python) Run() {
+func (p *Python) Run(args []string) {
+	p.runner.Run(append([]string{
+		"run",
+		"-v", p.srcVolume,
+		p.image},
+		args...))
 }
 
 func NewPython(root *Root, config *Config) *Python {
-	volume := fmt.Sprintf("%s:/usr/src/app", root.Root)
+	srcVolume := fmt.Sprintf("%s:/usr/src/app", root.Root)
 	runner := NewRunner(root, "docker")
-	return &Python{config.Name, config.Name, volume, runner}
+	return &Python{config.Name, config.Name, srcVolume, runner}
 }

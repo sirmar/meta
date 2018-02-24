@@ -63,10 +63,12 @@ func (g *Golang) CI() {
 	g.Coverage()
 }
 
-func (g *Golang) Run() {
-	g.runner.Run([]string{
+func (g *Golang) Run(args []string) {
+	g.runner.Run(append([]string{
 		"run",
-		g.image})
+		"-v", g.srcVolume,
+		g.image},
+		args...))
 }
 
 func NewGolang(root *Root, config *Config) *Golang {

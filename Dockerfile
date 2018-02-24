@@ -8,7 +8,8 @@ WORKDIR /go/src/meta
 
 # Golang dev dependencies
 RUN go get \
-    github.com/stretchr/testify
+    github.com/stretchr/testify \
+    github.com/vektra/mockery/.../
 
 # Golang production dependencies
 RUN go get \
