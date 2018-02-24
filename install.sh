@@ -5,7 +5,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 docker build --quiet --tag meta:latest $DIR
 
 docker run --rm \
-       -w /go/src/meta \
        -v "$DIR":/go/src/meta \
        -v "$DIR"/installed:/go/bin \
        -e GOOS=darwin \
