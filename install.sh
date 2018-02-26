@@ -1,6 +1,6 @@
-#!/bin/bash -e
+#!/bin/sh
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DIR="$(cd "$(dirname "$0")" && pwd)"
 ARCH=`uname -s`
 
 docker build --quiet --tag meta:latest $DIR
