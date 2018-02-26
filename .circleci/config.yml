@@ -2,7 +2,9 @@ version: 2
 
 jobs:
   build:
-    machine: true
+    docker:
+      - image: docker:stable-git
+
     working_directory: /meta
     steps:
       - checkout
