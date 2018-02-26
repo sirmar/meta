@@ -5,8 +5,9 @@ jobs:
     docker:
       - image: docker:stable-git
 
-    working_directory: /meta
+    working_directory: /app
     steps:
       - checkout
+      - setup_remote_docker
       - run: ./install.sh
       - run: meta ci
