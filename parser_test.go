@@ -1,6 +1,8 @@
-package main
+package main_test
 
 import (
+	"github.com/stretchr/testify/suite"
+	"meta"
 	"meta/mocks"
 	"os"
 	"testing"
@@ -8,15 +10,55 @@ import (
 
 //go:generate mockery -name=Language
 
-func TestBuildCommand(t *testing.T) {
-	language := new(mocks.Language)
-	language.On("Build").Return()
-	meta("build", language)
+type ParserTest struct {
+	suite.Suite
+	parser   *main.Parser
+	language *mocks.Language
 }
 
-func meta(cmd string, language Language) {
+func (suite *ParserTest) SetupTest() {
+	suite.language = new(mocks.Language)
+	suite.parser = main.NewParser(suite.language)
+}
+
+func (suite *ParserTest) TestInstall() {
+	suite.language.On("Install").Return()
+	suite.meta("install")
+}
+
+func (suite *ParserTest) TestBuild() {
+	suite.language.On("Build").Return()
+	suite.meta("build")
+}
+
+func (suite *ParserTest) TestTest() {
+	suite.language.On("Test").Return()
+	suite.meta("test")
+}
+
+func (suite *ParserTest) TestLint() {
+	suite.language.On("Lint").Return()
+	suite.meta("lint")
+}
+
+func (suite *ParserTest) TestCoverage() {
+	suite.language.On("Coverage").Return()
+	suite.meta("coverage")
+}
+
+func (suite *ParserTest) TestRun() {
+	// suite.language.On("run", []string{"go", "generate"}).Return()
+	// suite.meta("run", "-c", "go generate")
+}
+
+func (suite *ParserTest) meta(cmd ...string) {
 	oldArgs := os.Args
-	os.Args = []string{"meta", cmd}
-	NewParser(language)
+	os.Args = append([]string{"meta"}, cmd...)
+	suite.parser.Run()
 	os.Args = oldArgs
+	suite.language.AssertExpectations(suite.T())
+}
+
+func TestParserSuite(t *testing.T) {
+	suite.Run(t, new(ParserTest))
 }

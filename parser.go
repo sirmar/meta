@@ -7,7 +7,15 @@ import (
 	"strings"
 )
 
-func NewParser(language Language) {
+type Parser struct {
+	language Language
+}
+
+func NewParser(language Language) *Parser {
+	return &Parser{language}
+}
+
+func (p *Parser) Run() {
 	parser := argparse.NewParser("commands", "Simple example of argparse commands")
 
 	install := parser.NewCommand("install", "install help")
@@ -32,23 +40,26 @@ func NewParser(language Language) {
 	}
 
 	if install.Happened() {
-		language.Install()
+		p.language.Install()
 	} else if build.Happened() {
-		language.Build()
+		p.language.Build()
 	} else if test.Happened() {
-		language.Test()
+		p.language.Test()
 	} else if lint.Happened() {
-		language.Lint()
+		p.language.Lint()
 	} else if coverage.Happened() {
-		language.Coverage()
+		p.language.Coverage()
 	} else if ci.Happened() {
-		language.CI()
+		p.language.CI()
 	} else if run.Happened() {
-		language.Run(strings.Split(*runCmd, " "))
+		cmdArray := strings.Split(*runCmd, " ")
+		log.Println("Marcus:", cmdArray)
+		p.language.Run(cmdArray)
 	} else if create.Happened() {
 		if python.Happened() {
 			log.Println("create python")
 		}
 	} else if validate.Happened() {
 	}
+
 }

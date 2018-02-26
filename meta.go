@@ -19,5 +19,5 @@ func main() {
 	root := NewRoot()
 	config := NewConfig()
 	language := NewLanguage(root, config)
-	NewParser(language)
+	NewParser(language).Run()
 }
