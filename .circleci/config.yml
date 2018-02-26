@@ -1,0 +1,9 @@
+version: 2
+
+jobs:
+  build:
+    working_directory: /meta
+    steps:
+      - checkout
+      - run: ./install.sh
+      - run: meta ci
