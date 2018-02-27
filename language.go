@@ -4,7 +4,7 @@ import (
 	"log"
 )
 
-type Language interface {
+type ILanguage interface {
 	Install()
 	Build()
 	Test()
@@ -12,9 +12,17 @@ type Language interface {
 	Coverage()
 	CI()
 	Run(args []string)
+	SetImageOnly()
 }
 
-func NewLanguage(root *Root, config *Config) Language {
+type Language struct {
+	name      string
+	image     string
+	srcVolume string
+	runner    *Runner
+}
+
+func NewLanguage(root *Root, config *Config) ILanguage {
 	switch config.Language {
 	case "python":
 		return NewPython(root, config)
@@ -24,4 +32,32 @@ func NewLanguage(root *Root, config *Config) Language {
 		log.Fatal(config.Language, "not supported!")
 		return NewPython(root, config)
 	}
+}
+
+func (l *Language) Install() {
+	l.dockerBuild()
+}
+
+func (l *Language) Build() {
+	log.Println("Building not supported in this language ")
+}
+
+func (l *Language) SetImageOnly() {
+	l.srcVolume = ""
+}
+
+func (l *Language) dockerRun(cmds ...string) {
+	if l.useImageOnly() {
+		l.runner.Run(append([]string{"run", l.image}, cmds...))
+	} else {
+		l.runner.Run(append([]string{"run", "-v", l.srcVolume, l.image}, cmds...))
+	}
+}
+
+func (l *Language) dockerBuild() {
+	l.runner.Run([]string{"build", ".", "--tag", l.image})
+}
+
+func (l *Language) useImageOnly() bool {
+	return l.srcVolume == ""
 }

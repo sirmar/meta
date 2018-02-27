@@ -8,16 +8,16 @@ import (
 	"testing"
 )
 
-//go:generate mockery -name=Language
+//go:generate mockery -name=ILanguage
 
 type ParserTest struct {
 	suite.Suite
 	parser   *main.Parser
-	language *mocks.Language
+	language *mocks.ILanguage
 }
 
 func (suite *ParserTest) SetupTest() {
-	suite.language = new(mocks.Language)
+	suite.language = new(mocks.ILanguage)
 	suite.parser = main.NewParser(suite.language)
 }
 

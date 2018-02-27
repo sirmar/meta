@@ -1,65 +1,67 @@
 package main
 
 import (
-	"github.com/akamensky/argparse"
+	"github.com/devfacet/gocmd"
 	"log"
-	"os"
 	"strings"
 )
 
 type Parser struct {
-	language Language
+	language ILanguage
 }
 
-func NewParser(language Language) *Parser {
+func NewParser(language ILanguage) *Parser {
 	return &Parser{language}
 }
 
 func (p *Parser) Run() {
-	parser := argparse.NewParser("commands", "Simple example of argparse commands")
+	flags := struct {
+		Help      bool     `short:"h" long:"help" description:"Display usage" global:"true"`
+		ImageOnly bool     `short:"i" long:"image-only" description:"Display usage" global:"true"`
+		Version   bool     `short:"v" long:"version" description:"Display version"`
+		Install   struct{} `command:"install" description:"install description"`
+		Build     struct{} `command:"build" description:"build description"`
+		Test      struct{} `command:"test" description:"test description"`
+		Coverage  struct{} `command:"coverage" description:"coverage description"`
+		Lint      struct{} `command:"lint" description:"lint description"`
+		CI        struct{} `command:"ci" description:"ci description"`
+		Run       struct {
+			Command string `short:"c" long:"command" required:"true" description:"Command"`
+		} `command:"run" description:"run description"`
+	}{}
 
-	install := parser.NewCommand("install", "install help")
-	build := parser.NewCommand("build", "build help")
-	test := parser.NewCommand("test", "test help")
-	coverage := parser.NewCommand("coverage", "coverage help")
-	lint := parser.NewCommand("lint", "lint help")
-	ci := parser.NewCommand("ci", "ci help")
-
-	run := parser.NewCommand("run", "run help")
-	runCmd := run.String("c", "command", &argparse.Options{Required: true, Help: "Command to run inside docker container"})
-
-	create := parser.NewCommand("create", "create help")
-	python := create.NewCommand("python", "python help")
-
-	validate := parser.NewCommand("validate", "validate help")
-
-	err := parser.Parse(os.Args)
+	cmd, err := gocmd.New(gocmd.Options{
+		Name:        "meta",
+		Version:     "0.0.1",
+		Description: "Unified interface for development",
+		Flags:       &flags,
+		AutoHelp:    true,
+		AutoVersion: true,
+		AnyError:    true,
+	})
 
 	if err != nil {
-		log.Fatal(parser.Usage(err))
+		log.Fatal(err)
 	}
 
-	if install.Happened() {
+	if flags.ImageOnly {
+		p.language.SetImageOnly()
+	}
+
+	if cmd.FlagArgs("Install") != nil {
 		p.language.Install()
-	} else if build.Happened() {
+	} else if cmd.FlagArgs("Build") != nil {
 		p.language.Build()
-	} else if test.Happened() {
+	} else if cmd.FlagArgs("Test") != nil {
 		p.language.Test()
-	} else if lint.Happened() {
-		p.language.Lint()
-	} else if coverage.Happened() {
+	} else if cmd.FlagArgs("Coverage") != nil {
 		p.language.Coverage()
-	} else if ci.Happened() {
+	} else if cmd.FlagArgs("Lint") != nil {
+		p.language.Lint()
+	} else if cmd.FlagArgs("CI") != nil {
 		p.language.CI()
-	} else if run.Happened() {
-		cmdArray := strings.Split(*runCmd, " ")
-		log.Println("Marcus:", cmdArray)
+	} else if cmd.FlagArgs("Run") != nil {
+		cmdArray := strings.Split(flags.Run.Command, " ")
 		p.language.Run(cmdArray)
-	} else if create.Happened() {
-		if python.Happened() {
-			log.Println("create python")
-		}
-	} else if validate.Happened() {
 	}
-
 }

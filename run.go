@@ -53,6 +53,10 @@ func (r *Runner) Run(args []string) {
 	r.root.MoveToCwd()
 }
 
+func NewDockerRunner(root *Root) *Runner {
+	return &Runner{root, "docker"}
+}
+
 func NewRunner(root *Root, cmd string) *Runner {
 	return &Runner{root, cmd}
 }

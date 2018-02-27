@@ -3,10 +3,9 @@ version: 2
 jobs:
   build:
     docker:
-      - image: docker:stable-git
+      - image: sirmar/development-environment
 
     steps:
       - checkout
       - setup_remote_docker
-      - run: ./install.sh
-      - run: meta ci
+      - run: meta -i ci

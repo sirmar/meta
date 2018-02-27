@@ -3,11 +3,10 @@
 DIR="$(cd "$(dirname "$0")" && pwd)"
 ARCH=`uname -s`
 
-docker build --quiet --tag meta:latest $DIR
+docker build --tag meta:latest $DIR
 
 if [ $ARCH == 'Darwin' ]; then
    docker run --rm \
-       -v "$DIR":/go/src/meta \
        -v "$DIR"/installed:/go/bin \
        -e GOOS=darwin \
        -e GOARCH=386 \
@@ -15,7 +14,6 @@ if [ $ARCH == 'Darwin' ]; then
        go build -o /go/bin/meta
 else
    docker run --rm \
-       -v "$DIR":/go/src/meta \
        -v "$DIR"/installed:/go/bin \
        meta:latest \
        go build -o /go/bin/meta

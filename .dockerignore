@@ -1,8 +1,10 @@
 Dockerfile
 README.org
-languages
-bin
+templates
 .meta
 .git
 .gitignore
 .cache
+push_development_environment.sh
+install_meta.sh
+installed
