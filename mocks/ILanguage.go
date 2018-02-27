@@ -23,6 +23,11 @@ func (_m *ILanguage) Coverage() {
 	_m.Called()
 }
 
+// Enter provides a mock function with given fields:
+func (_m *ILanguage) Enter() {
+	_m.Called()
+}
+
 // Install provides a mock function with given fields:
 func (_m *ILanguage) Install() {
 	_m.Called()

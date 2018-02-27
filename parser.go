@@ -25,6 +25,7 @@ func (p *Parser) Run() {
 		Coverage  struct{} `command:"coverage" description:"coverage description"`
 		Lint      struct{} `command:"lint" description:"lint description"`
 		CI        struct{} `command:"ci" description:"ci description"`
+		Enter     struct{} `command:"enter" description:"enter description"`
 		Run       struct {
 			Command string `short:"c" long:"command" required:"true" description:"Command"`
 		} `command:"run" description:"run description"`
@@ -60,6 +61,8 @@ func (p *Parser) Run() {
 		p.language.Lint()
 	} else if cmd.FlagArgs("CI") != nil {
 		p.language.CI()
+	} else if cmd.FlagArgs("Enter") != nil {
+		p.language.Enter()
 	} else if cmd.FlagArgs("Run") != nil {
 		cmdArray := strings.Split(flags.Run.Command, " ")
 		p.language.Run(cmdArray)

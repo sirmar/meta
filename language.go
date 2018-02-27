@@ -11,6 +11,7 @@ type ILanguage interface {
 	Lint()
 	Coverage()
 	CI()
+	Enter()
 	Run(args []string)
 	SetImageOnly()
 }
@@ -40,6 +41,14 @@ func (l *Language) Install() {
 
 func (l *Language) Build() {
 	log.Println("Building not supported in this language ")
+}
+
+func (l *Language) Enter() {
+	if l.useImageOnly() {
+		l.runner.Run([]string{"run", "-it", l.image, "sh"})
+	} else {
+		l.runner.Run([]string{"run", "-it", "-v", l.srcVolume, l.image, "sh"})
+	}
 }
 
 func (l *Language) SetImageOnly() {

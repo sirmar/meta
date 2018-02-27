@@ -46,6 +46,16 @@ func (suite *ParserTest) TestCoverage() {
 	suite.meta("coverage")
 }
 
+func (suite *ParserTest) TestEnter() {
+	suite.language.On("Enter").Return()
+	suite.meta("enter")
+}
+
+func (suite *ParserTest) TestCI() {
+	suite.language.On("CI").Return()
+	suite.meta("ci")
+}
+
 func (suite *ParserTest) TestRun() {
 	// suite.language.On("run", []string{"go", "generate"}).Return()
 	// suite.meta("run", "-c", "go generate")
