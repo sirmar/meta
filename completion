@@ -1,0 +1,25 @@
+_meta()
+{
+    local cur prev commands
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    commands="install build test coverage lint ci enter run"
+
+#
+    #  Complete the arguments to some of the basic commands.
+    #
+    case "${prev}" in
+        run)
+            local opts="--command"
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
+        *)
+            ;;
+    esac
+
+    COMPREPLY=($(compgen -W "${commands}" -- ${cur}))
+    return 0
+}
+complete -F _meta meta
