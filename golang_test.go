@@ -11,8 +11,8 @@ import (
 
 type GolangTest struct {
 	suite.Suite
-	golang   *main.Golang
-	runner  *mocks.IRunner
+	golang *main.Golang
+	runner *mocks.IRunner
 }
 
 func (suite *GolangTest) SetupTest() {

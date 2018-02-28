@@ -11,8 +11,8 @@ import (
 
 type PythonTest struct {
 	suite.Suite
-	python   *main.Python
-	runner  *mocks.IRunner
+	python *main.Python
+	runner *mocks.IRunner
 }
 
 func (suite *PythonTest) SetupTest() {

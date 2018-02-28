@@ -6,5 +6,5 @@ import (
 )
 
 func contains(find string) interface{} {
-	return mock.MatchedBy(func (cmd []string) bool {return strings.Contains(strings.Join(cmd, " "), find)})
+	return mock.MatchedBy(func(cmd []string) bool { return strings.Contains(strings.Join(cmd, " "), find) })
 }
