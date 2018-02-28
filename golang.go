@@ -8,9 +8,8 @@ type Golang struct {
 	Language
 }
 
-func NewGolang(root *Root, config *Config) *Golang {
+func NewGolang(runner IRunner, root *Root, config *Config) *Golang {
 	srcVolume := fmt.Sprintf("%s:/go/src/%s", root.Root, config.Name)
-	runner := NewDockerRunner(root)
 	return &Golang{Language{config.Name, config.Name, srcVolume, runner}}
 }
 
@@ -36,8 +35,4 @@ func (g *Golang) CI() {
 	g.Build()
 	g.Lint()
 	g.Coverage()
-}
-
-func (g *Golang) Run(args []string) {
-	g.dockerRun(args...)
 }

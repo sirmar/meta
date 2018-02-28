@@ -18,6 +18,7 @@ func main() {
 
 	root := NewRoot()
 	config := NewConfig()
-	language := NewLanguage(root, config)
+	runner := NewDockerRunner(root)
+	language := NewLanguage(runner, root, config)
 	NewParser(language).Run()
 }

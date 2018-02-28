@@ -64,7 +64,6 @@ func (p *Parser) Run() {
 	} else if cmd.FlagArgs("Enter") != nil {
 		p.language.Enter()
 	} else if cmd.FlagArgs("Run") != nil {
-		cmdArray := strings.Split(flags.Run.Command, " ")
-		p.language.Run(cmdArray)
+		p.language.Run(strings.Split(flags.Run.Command, " "))
 	}
 }

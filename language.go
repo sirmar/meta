@@ -20,18 +20,18 @@ type Language struct {
 	name      string
 	image     string
 	srcVolume string
-	runner    *Runner
+	runner    IRunner
 }
 
-func NewLanguage(root *Root, config *Config) ILanguage {
+func NewLanguage(runner IRunner, root *Root, config *Config) ILanguage {
 	switch config.Language {
 	case "python":
-		return NewPython(root, config)
+		return NewPython(runner, root, config)
 	case "golang":
-		return NewGolang(root, config)
+		return NewGolang(runner, root, config)
 	default:
 		log.Fatal(config.Language, "not supported!")
-		return NewPython(root, config)
+		return NewPython(runner, root, config)
 	}
 }
 
@@ -49,6 +49,10 @@ func (l *Language) Enter() {
 	} else {
 		l.runner.Run([]string{"run", "-it", "-v", l.srcVolume, l.image, "sh"})
 	}
+}
+
+func (l *Language) Run(args []string) {
+	l.dockerRun(args...)
 }
 
 func (l *Language) SetImageOnly() {

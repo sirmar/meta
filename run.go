@@ -10,6 +10,10 @@ import (
 	"strings"
 )
 
+type IRunner interface {
+	Run(args []string)
+}
+
 type Runner struct {
 	root *Root
 	cmd  string
@@ -53,10 +57,10 @@ func (r *Runner) Run(args []string) {
 	r.root.MoveToCwd()
 }
 
-func NewDockerRunner(root *Root) *Runner {
+func NewDockerRunner(root *Root) IRunner {
 	return &Runner{root, "docker"}
 }
 
-func NewRunner(root *Root, cmd string) *Runner {
+func NewRunner(root *Root, cmd string) IRunner {
 	return &Runner{root, cmd}
 }

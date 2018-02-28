@@ -57,8 +57,8 @@ func (suite *ParserTest) TestCI() {
 }
 
 func (suite *ParserTest) TestRun() {
-	// suite.language.On("run", []string{"go", "generate"}).Return()
-	// suite.meta("run", "-c", "go generate")
+	suite.language.On("Run", []string{"go", "generate"}).Return()
+	suite.meta("run", "-c", "go generate")
 }
 
 func (suite *ParserTest) meta(cmd ...string) {
