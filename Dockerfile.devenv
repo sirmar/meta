@@ -23,6 +23,10 @@ COPY . .
 RUN go build -o /go/bin/meta
 
 # Development environment image
-FROM docker:dind
-RUN apk add --update --no-cache git
+FROM alpine:latest
+RUN apk add --update --no-cache ca-certificates openssh-client git
+RUN wget https://download.docker.com/linux/static/stable/x86_64/docker-17.12.1-ce.tgz && \
+    tar xzvf docker-17.12.1-ce.tgz && \
+    cp docker/docker /usr/bin/ && \
+    rm -rf docker-17.12.1-ce.tgz docker
 COPY --from=builder /go/bin/meta /usr/bin/meta
