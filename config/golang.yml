@@ -1,0 +1,16 @@
+build:
+  - go build
+
+test:
+  - go test
+
+lint:
+  - go vet
+
+coverage:
+  - go test -cover
+
+ci:
+  - go build
+  - go vet
+  - go test -cover

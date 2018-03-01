@@ -4,13 +4,11 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name='pkgname',
+    name='{{name}}',
     version='0.0.0',
-    author='Marcus Veibäck',
-    author_email='sirmar@gmail.com',
+    author='{{author}}',
+    author_email='{{email}}',
 
-    description='{{description}}',
-    url='https://github.com/sirmar/pkgname',
     license='MIT',
 
     zip_safe=True,

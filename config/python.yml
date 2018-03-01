@@ -1,0 +1,14 @@
+build: false
+
+test:
+  - nosestests test
+
+lint:
+  - flake8 setup.py test {{name}}
+
+coverage:
+  - nosestests --with-coverage test
+
+ci:
+  - flake8 setup.py test {{name}}
+  - nosestests --with-coverage test

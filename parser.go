@@ -29,6 +29,14 @@ func (p *Parser) Run() {
 		Run       struct {
 			Command string `short:"c" long:"command" required:"true" description:"Command"`
 		} `command:"run" description:"run description"`
+		Create struct {
+			Python struct {
+				Name string `short:"n" long:"name" required:"true" description:"Name"`
+			} `command:"python" description:"python description"`
+		} `command:"create" description:"create description"`
+		verify struct {
+			Python struct{} `command:"python" description:"python description"`
+		} `command:"verify" description:"verify description"`
 	}{}
 
 	cmd, err := gocmd.New(gocmd.Options{
@@ -65,5 +73,9 @@ func (p *Parser) Run() {
 		p.language.Enter()
 	} else if cmd.FlagArgs("Run") != nil {
 		p.language.Run(strings.Split(flags.Run.Command, " "))
+	} else if cmd.FlagArgs("Create") != nil {
+		if cmd.FlagArgs("Create.Python") != nil {
+			NewTempate("python", flags.Create.Python.Name).Create()
+		}
 	}
 }

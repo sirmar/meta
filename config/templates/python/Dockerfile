@@ -3,7 +3,7 @@ FROM python:3-alpine
 # Os dependencies
 # RUN apk add --update --no-cache \
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/{{name}}
 
 # Python dev dependencies
 RUN pip install --no-cache-dir nose coverage flake8
