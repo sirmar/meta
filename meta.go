@@ -14,9 +14,8 @@ type MetaYml struct {
 type Meta struct {
 	Meta *MetaYml
 	Root string
-	Cwd string
+	Cwd  string
 }
-
 
 func (m *Meta) MoveToRoot() {
 	os.Chdir(m.Root)

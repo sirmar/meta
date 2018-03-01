@@ -12,7 +12,6 @@ func (w logWriter) Write(bytes []byte) (int, error) {
 	return fmt.Print("Meta: ", string(bytes))
 }
 
-
 func main() {
 	log.SetFlags(0)
 	log.SetOutput(new(logWriter))
