@@ -8,10 +8,11 @@ import (
 
 type Parser struct {
 	language ILanguage
+	template ITemplate
 }
 
-func NewParser(language ILanguage) *Parser {
-	return &Parser{language}
+func NewParser(language ILanguage, template ITemplate) *Parser {
+	return &Parser{language, template}
 }
 
 func (p *Parser) Run() {
@@ -75,7 +76,7 @@ func (p *Parser) Run() {
 		p.language.Run(strings.Split(flags.Run.Command, " "))
 	} else if cmd.FlagArgs("Create") != nil {
 		if cmd.FlagArgs("Create.Python") != nil {
-			NewTempate("python", flags.Create.Python.Name).Create()
+			p.template.Create(flags.Create.Python.Name, "python")
 		}
 	}
 }

@@ -19,8 +19,7 @@ func (suite *PythonTest) SetupTest() {
 	suite.runner = new(mocks.IRunner)
 	suite.python = main.NewPython(
 		suite.runner,
-		&main.Root{"/root", "/root"},
-		&main.Config{"name", "python"})
+		&main.Meta{&main.MetaYml{"name", "python"}, "/root", "/root"})
 }
 
 func (suite *PythonTest) TestInstall() {

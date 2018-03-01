@@ -1,24 +1,55 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"os"
+	"path"
+	"path/filepath"
 )
 
-type logWriter struct {
+type MetaYml struct {
+	Name     string
+	Language string
 }
 
-func (w logWriter) Write(bytes []byte) (int, error) {
-	return fmt.Print("Meta: ", string(bytes))
+type Meta struct {
+	Meta *MetaYml
+	Root string
+	Cwd string
 }
 
-func main() {
-	log.SetFlags(0)
-	log.SetOutput(new(logWriter))
 
-	root := NewRoot()
-	config := NewConfig()
-	runner := NewDockerRunner(root)
-	language := NewLanguage(runner, root, config)
-	NewParser(language).Run()
+func (m *Meta) MoveToRoot() {
+	os.Chdir(m.Root)
+}
+
+func NewMeta() *Meta {
+	m := new(Meta)
+	currentDir, _ := os.Getwd()
+	m.Root = find(currentDir)
+	m.Cwd = currentDir
+
+	if m.Found() {
+		m.Meta = ReadYml(".meta/meta.yml", new(MetaYml)).(*MetaYml)
+	}
+
+	return m
+}
+
+func (m *Meta) MoveToCwd() {
+	os.Chdir(m.Cwd)
+}
+
+func (m *Meta) Found() bool {
+	return m.Root != "Not found"
+}
+
+func find(currentDir string) string {
+	metaFilePath := path.Join(currentDir, ".meta", "meta.yml")
+	if _, err := os.Stat(metaFilePath); err == nil {
+		return currentDir
+	}
+	if currentDir == "/" {
+		return "Not found"
+	}
+	return find(filepath.Dir(currentDir))
 }

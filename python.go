@@ -8,9 +8,10 @@ type Python struct {
 	Language
 }
 
-func NewPython(runner IRunner, root *Root, config *Config) *Python {
-	srcVolume := fmt.Sprintf("%s:/usr/src/app", root.Root)
-	return &Python{Language{config.Name, config.Name, srcVolume, runner}}
+func NewPython(runner IRunner, meta *Meta) *Python {
+	name := meta.Meta.Name
+	srcVolume := fmt.Sprintf("%s:/usr/src/%s", meta.Root, name)
+	return &Python{Language{name, name, srcVolume, runner}}
 }
 
 func (p *Python) Test() {

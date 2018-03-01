@@ -8,9 +8,10 @@ type Golang struct {
 	Language
 }
 
-func NewGolang(runner IRunner, root *Root, config *Config) *Golang {
-	srcVolume := fmt.Sprintf("%s:/go/src/%s", root.Root, config.Name)
-	return &Golang{Language{config.Name, config.Name, srcVolume, runner}}
+func NewGolang(runner IRunner, meta *Meta) *Golang {
+	name := meta.Meta.Name
+	srcVolume := fmt.Sprintf("%s:/go/src/%s", meta.Root, name)
+	return &Golang{Language{name, name, srcVolume, runner}}
 }
 
 func (g *Golang) Build() {

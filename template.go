@@ -1,13 +1,16 @@
 package main
 
+type ITemplate interface {
+	Create(name string, language string)
+}
+
 type Template struct {
-	language string
-	name     string
+	Settings *Settings
 }
 
-func NewTempate(language string, name string) *Template {
-	return &Template{language, name}
+func NewTemplate(settings *Settings) ITemplate {
+	return &Template{settings}
 }
 
-func (t *Template) Create() {
+func (t *Template) Create(name string, language string) {
 }

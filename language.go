@@ -23,15 +23,15 @@ type Language struct {
 	runner    IRunner
 }
 
-func NewLanguage(runner IRunner, root *Root, config *Config) ILanguage {
-	switch config.Language {
+func NewLanguage(runner IRunner, meta *Meta) ILanguage {
+	switch meta.Meta.Language {
 	case "python":
-		return NewPython(runner, root, config)
+		return NewPython(runner, meta)
 	case "golang":
-		return NewGolang(runner, root, config)
+		return NewGolang(runner, meta)
 	default:
-		log.Fatal(config.Language, "not supported!")
-		return NewPython(runner, root, config)
+		log.Fatal(meta.Meta.Language, "not supported!")
+		return NewPython(runner, meta)
 	}
 }
 

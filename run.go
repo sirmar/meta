@@ -15,12 +15,12 @@ type IRunner interface {
 }
 
 type Runner struct {
-	root *Root
+	meta *Meta
 	cmd  string
 }
 
 func (r *Runner) Run(args []string) {
-	r.root.MoveToRoot()
+	r.meta.MoveToRoot()
 	fmt.Println("Running:", r.cmd, strings.Join(args, " "))
 
 	var stdoutBuf, stderrBuf bytes.Buffer
@@ -54,13 +54,13 @@ func (r *Runner) Run(args []string) {
 		log.Fatal("failed to capture stdout or stderr\n")
 	}
 
-	r.root.MoveToCwd()
+	r.meta.MoveToCwd()
 }
 
-func NewDockerRunner(root *Root) IRunner {
-	return &Runner{root, "docker"}
+func NewDockerRunner(meta *Meta) IRunner {
+	return &Runner{meta, "docker"}
 }
 
-func NewRunner(root *Root, cmd string) IRunner {
-	return &Runner{root, cmd}
+func NewRunner(meta *Meta, cmd string) IRunner {
+	return &Runner{meta, cmd}
 }

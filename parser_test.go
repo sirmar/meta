@@ -9,16 +9,19 @@ import (
 )
 
 //go:generate mockery -name=ILanguage
+//go:generate mockery -name=ITemplate
 
 type ParserTest struct {
 	suite.Suite
 	parser   *main.Parser
 	language *mocks.ILanguage
+	template *mocks.ITemplate
 }
 
 func (suite *ParserTest) SetupTest() {
 	suite.language = new(mocks.ILanguage)
-	suite.parser = main.NewParser(suite.language)
+	suite.template = new(mocks.ITemplate)
+	suite.parser = main.NewParser(suite.language, suite.template)
 }
 
 func (suite *ParserTest) TestInstall() {

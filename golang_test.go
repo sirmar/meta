@@ -19,8 +19,7 @@ func (suite *GolangTest) SetupTest() {
 	suite.runner = new(mocks.IRunner)
 	suite.golang = main.NewGolang(
 		suite.runner,
-		&main.Root{"/root", "/root"},
-		&main.Config{"test", "golang"})
+		&main.Meta{&main.MetaYml{"test", "golang"}, "/root", "/root"})
 }
 
 func (suite *GolangTest) TestInstall() {
