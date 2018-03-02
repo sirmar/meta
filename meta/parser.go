@@ -8,7 +8,7 @@ import (
 type Parser struct {
 	language ILanguage
 	template ITemplate
-	log ILog
+	log      ILog
 }
 
 func NewParser(language ILanguage, template ITemplate, log ILog) *Parser {
