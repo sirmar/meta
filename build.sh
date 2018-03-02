@@ -11,10 +11,10 @@ docker run --rm \
        -e GOOS=darwin \
        -e GOARCH=386 \
        meta:latest \
-       go build -o /go/bin/meta-mac
+       go build -o /go/bin/meta-mac ./cmd
 
 echo "Building Linux binary ..."
 docker run --rm \
        -v "$DIR"/bin:/go/bin \
        meta:latest \
-       go build -o /go/bin/meta-linux
+       go build -o /go/bin/meta-linux ./cmd

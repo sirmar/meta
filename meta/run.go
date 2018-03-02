@@ -1,10 +1,8 @@
-package main
+package meta
 
 import (
 	"bytes"
-	"fmt"
 	"io"
-	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -15,13 +13,12 @@ type IRunner interface {
 }
 
 type Runner struct {
-	meta *Meta
-	cmd  string
+	cmd string
+	log ILog
 }
 
 func (r *Runner) Run(args []string) {
-	r.meta.MoveToRoot()
-	fmt.Println("Running:", r.cmd, strings.Join(args, " "))
+	r.log.Println("Running:", r.cmd, strings.Join(args, " "))
 
 	var stdoutBuf, stderrBuf bytes.Buffer
 
@@ -35,7 +32,7 @@ func (r *Runner) Run(args []string) {
 	stderr := io.MultiWriter(os.Stderr, &stderrBuf)
 	err := cmd.Start()
 	if err != nil {
-		log.Fatalf("cmd.Start() failed with '%s'\n", err)
+		r.log.Fatalf("cmd.Start() failed with '%s'\n", err)
 	}
 
 	go func() {
@@ -48,19 +45,17 @@ func (r *Runner) Run(args []string) {
 
 	err = cmd.Wait()
 	if err != nil {
-		log.Fatalf("cmd.Run() failed with %s\n", err)
+		r.log.Fatalf("cmd.Run() failed with %s\n", err)
 	}
 	if errStdout != nil || errStderr != nil {
-		log.Fatal("failed to capture stdout or stderr\n")
+		r.log.Fatal("failed to capture stdout or stderr\n")
 	}
-
-	r.meta.MoveToCwd()
 }
 
-func NewDockerRunner(meta *Meta) IRunner {
-	return &Runner{meta, "docker"}
+func NewDockerRunner(log ILog) IRunner {
+	return NewRunner("docker", log)
 }
 
-func NewRunner(meta *Meta, cmd string) IRunner {
-	return &Runner{meta, cmd}
+func NewRunner(cmd string, log ILog) IRunner {
+	return &Runner{cmd, log}
 }

@@ -1,4 +1,4 @@
-package main
+package meta
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ type Python struct {
 	Language
 }
 
-func NewPython(runner IRunner, meta *Meta) *Python {
+func NewPython(runner IRunner, meta *DotMeta) *Python {
 	name := meta.Meta.Name
 	srcVolume := fmt.Sprintf("%s:/usr/src/%s", meta.Root, name)
 	return &Python{Language{name, name, srcVolume, runner}}

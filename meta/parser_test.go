@@ -1,19 +1,16 @@
-package main_test
+package meta_test
 
 import (
 	"github.com/stretchr/testify/suite"
-	"meta"
-	"meta/mocks"
+	"meta/meta"
+	"meta/meta/mocks"
 	"os"
 	"testing"
 )
 
-//go:generate mockery -name=ILanguage
-//go:generate mockery -name=ITemplate
-
 type ParserTest struct {
 	suite.Suite
-	parser   *main.Parser
+	parser   *meta.Parser
 	language *mocks.ILanguage
 	template *mocks.ITemplate
 }
@@ -21,7 +18,7 @@ type ParserTest struct {
 func (suite *ParserTest) SetupTest() {
 	suite.language = new(mocks.ILanguage)
 	suite.template = new(mocks.ITemplate)
-	suite.parser = main.NewParser(suite.language, suite.template)
+	suite.parser = meta.NewParser(suite.language, suite.template, new(mocks.ILog))
 }
 
 func (suite *ParserTest) TestInstall() {

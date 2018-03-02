@@ -1,25 +1,23 @@
-package main_test
+package meta_test
 
 import (
 	"github.com/stretchr/testify/suite"
-	"meta"
-	"meta/mocks"
+	"meta/meta"
+	"meta/meta/mocks"
 	"testing"
 )
 
-//go:generate mockery -name=IRunner
-
 type GolangTest struct {
 	suite.Suite
-	golang *main.Golang
+	golang *meta.Golang
 	runner *mocks.IRunner
 }
 
 func (suite *GolangTest) SetupTest() {
 	suite.runner = new(mocks.IRunner)
-	suite.golang = main.NewGolang(
+	suite.golang = meta.NewGolang(
 		suite.runner,
-		&main.Meta{&main.MetaYml{"test", "golang"}, "/root", "/root"})
+		&meta.DotMeta{&meta.MetaYml{"test", "golang"}, "/root", new(mocks.IUtil)})
 }
 
 func (suite *GolangTest) TestInstall() {

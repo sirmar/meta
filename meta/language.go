@@ -1,8 +1,4 @@
-package main
-
-import (
-	"log"
-)
+package meta
 
 type ILanguage interface {
 	Install()
@@ -23,7 +19,7 @@ type Language struct {
 	runner    IRunner
 }
 
-func NewLanguage(runner IRunner, meta *Meta) ILanguage {
+func NewLanguage(runner IRunner, meta *DotMeta) ILanguage {
 	if meta.Found() {
 		switch meta.Meta.Language {
 		case "python":
@@ -31,7 +27,6 @@ func NewLanguage(runner IRunner, meta *Meta) ILanguage {
 		case "golang":
 			return NewGolang(runner, meta)
 		default:
-			log.Fatal(meta.Meta.Language, "not supported!")
 			return &Python{}
 		}
 	} else {
@@ -43,9 +38,7 @@ func (l *Language) Install() {
 	l.dockerBuild()
 }
 
-func (l *Language) Build() {
-	log.Println("Building not supported in this language ")
-}
+func (l *Language) Build() {}
 
 func (l *Language) Enter() {
 	if l.useImageOnly() {

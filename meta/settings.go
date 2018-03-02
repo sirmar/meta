@@ -1,4 +1,4 @@
-package main
+package meta
 
 type SettingsYml struct {
 	Author string
@@ -26,7 +26,7 @@ func NewSettings(util IUtil) *Settings {
 	return s
 }
 
-func (s *Settings) read() *Settings {
+func (s *Settings) Read() *Settings {
 	s.Settings = s.util.ReadYml("~/.meta/settings.yml", new(SettingsYml)).(*SettingsYml)
 	s.Python = s.util.ReadYml("~/.meta/python.yml", new(LanguageYml)).(*LanguageYml)
 	s.Golang = s.util.ReadYml("~/.meta/golang.yml", new(LanguageYml)).(*LanguageYml)

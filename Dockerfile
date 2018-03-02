@@ -20,4 +20,4 @@ RUN go get \
 COPY . .
 
 # Build binary
-RUN go build
+RUN go build ./...

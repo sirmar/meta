@@ -1,18 +1,18 @@
-package main
+package meta
 
 import (
 	"github.com/devfacet/gocmd"
-	"log"
 	"strings"
 )
 
 type Parser struct {
 	language ILanguage
 	template ITemplate
+	log ILog
 }
 
-func NewParser(language ILanguage, template ITemplate) *Parser {
-	return &Parser{language, template}
+func NewParser(language ILanguage, template ITemplate, log ILog) *Parser {
+	return &Parser{language, template, log}
 }
 
 func (p *Parser) Run() {
@@ -51,7 +51,7 @@ func (p *Parser) Run() {
 	})
 
 	if err != nil {
-		log.Fatal(err)
+		p.log.Fatal(err)
 	}
 
 	if flags.ImageOnly {
@@ -78,7 +78,7 @@ func (p *Parser) Run() {
 		if cmd.FlagArgs("Create.Python") != nil {
 			p.template.Create(&MetaYml{flags.Create.Python.Name, "python"})
 		} else {
-			log.Fatal("missing language for create command")
+			p.log.Fatal("missing language for create command")
 		}
 	}
 }
