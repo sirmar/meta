@@ -4,10 +4,10 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name='{{name}}',
+    name='{{.Name}}',
     version='0.0.0',
-    author='{{author}}',
-    author_email='{{email}}',
+    author='{{.Author}}',
+    author_email='{{.Email}}',
 
     license='MIT',
 

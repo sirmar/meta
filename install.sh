@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 ARCH=`uname -s`
@@ -11,4 +11,5 @@ else
 fi
 
 echo "Copy configuration to ~/.meta ..."
+rm -rf ~/.meta
 cp -r $DIR/config ~/.meta

@@ -35,7 +35,7 @@ func (p *Parser) Run() {
 				Name string `short:"n" long:"name" required:"true" description:"Name"`
 			} `command:"python" description:"python description"`
 		} `command:"create" description:"create description"`
-		verify struct {
+		Verify struct {
 			Python struct{} `command:"python" description:"python description"`
 		} `command:"verify" description:"verify description"`
 	}{}
@@ -76,7 +76,9 @@ func (p *Parser) Run() {
 		p.language.Run(strings.Split(flags.Run.Command, " "))
 	} else if cmd.FlagArgs("Create") != nil {
 		if cmd.FlagArgs("Create.Python") != nil {
-			p.template.Create(flags.Create.Python.Name, "python")
+			p.template.Create(&MetaYml{flags.Create.Python.Name, "python"})
+		} else {
+			log.Fatal("missing language for create command")
 		}
 	}
 }

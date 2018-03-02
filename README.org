@@ -1,3 +1,12 @@
-#+TITLE: Meta - The development environment
+#+TITLE: Meta - The Development Interface
 #+AUTHOR: Marcus Veibäck
 #+EMAIL: sirmar@gmail
+
+* Backlog
+** DOING Implement create
+** TODO Implement verify
+** TODO Development lifecycle commands (Build, Test, Lint...) should be read from settings
+** TODO Bundle settings and install script with the binary in a tar ball
+** TODO Implement release/releases
+** TODO Implement upload
+** TODO Break out logging behind interface

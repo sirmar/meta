@@ -3,7 +3,7 @@ branch = false
 
 [report]
 include =
-    **/pkgname/**
+    **/{{.Name}}/**
 
 exclude_lines =
     pragma: no cover

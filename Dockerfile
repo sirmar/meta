@@ -13,7 +13,8 @@ RUN go get \
 # Golang production dependencies
 RUN go get \
     github.com/devfacet/gocmd \
-    gopkg.in/yaml.v2
+    gopkg.in/yaml.v2 \
+    github.com/mitchellh/go-homedir
 
 # Copy source
 COPY . .

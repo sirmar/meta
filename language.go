@@ -24,14 +24,18 @@ type Language struct {
 }
 
 func NewLanguage(runner IRunner, meta *Meta) ILanguage {
-	switch meta.Meta.Language {
-	case "python":
-		return NewPython(runner, meta)
-	case "golang":
-		return NewGolang(runner, meta)
-	default:
-		log.Fatal(meta.Meta.Language, "not supported!")
-		return NewPython(runner, meta)
+	if meta.Found() {
+		switch meta.Meta.Language {
+		case "python":
+			return NewPython(runner, meta)
+		case "golang":
+			return NewGolang(runner, meta)
+		default:
+			log.Fatal(meta.Meta.Language, "not supported!")
+			return &Python{}
+		}
+	} else {
+		return &Python{}
 	}
 }
 

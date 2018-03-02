@@ -16,11 +16,12 @@ func main() {
 	log.SetFlags(0)
 	log.SetOutput(new(logWriter))
 
-	meta := NewMeta()
-	settings := NewSettings()
+	util := NewUtil()
+	meta := NewMeta(util)
+	settings := NewSettings(util).read()
 	runner := NewDockerRunner(meta)
 	language := NewLanguage(runner, meta)
-	template := NewTemplate(settings)
-
+	template := NewTemplate(settings, util)
 	NewParser(language, template).Run()
+
 }

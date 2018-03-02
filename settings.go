@@ -6,23 +6,29 @@ type SettingsYml struct {
 }
 
 type LanguageYml struct {
-	Build    struct{ cmds []string }
-	Test     struct{ cmds []string }
-	Lint     struct{ cmds []string }
-	Coverage struct{ cmds []string }
-	CI       struct{ cmds []string }
+	Build    []string `yaml:"build,flow"`
+	Test     []string `yaml:"test,flow"`
+	Lint     []string `yaml:"lint,flow"`
+	Coverage []string `yaml:"coverage,flow"`
+	CI       []string `yaml:"ci,flow"`
 }
 
 type Settings struct {
 	Settings *SettingsYml
 	Python   *LanguageYml
 	Golang   *LanguageYml
+	util     IUtil
 }
 
-func NewSettings() *Settings {
-	return &Settings{
-		ReadYml("~/.meta/general.yml", new(SettingsYml)).(*SettingsYml),
-		ReadYml("~/.meta/python.yml", new(LanguageYml)).(*LanguageYml),
-		ReadYml("~/.meta/golang.yml", new(LanguageYml)).(*LanguageYml),
-	}
+func NewSettings(util IUtil) *Settings {
+	s := new(Settings)
+	s.util = util
+	return s
+}
+
+func (s *Settings) read() *Settings {
+	s.Settings = s.util.ReadYml("~/.meta/settings.yml", new(SettingsYml)).(*SettingsYml)
+	s.Python = s.util.ReadYml("~/.meta/python.yml", new(LanguageYml)).(*LanguageYml)
+	s.Golang = s.util.ReadYml("~/.meta/golang.yml", new(LanguageYml)).(*LanguageYml)
+	return s
 }

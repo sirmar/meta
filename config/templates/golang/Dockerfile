@@ -3,7 +3,7 @@ FROM golang:1.9-alpine
 # Os dependencies
 RUN apk add --update --no-cache git
 
-WORKDIR /go/src/{{name}}
+WORKDIR /go/src/{{.Name}}
 
 # Golang dev dependencies
 RUN go get \

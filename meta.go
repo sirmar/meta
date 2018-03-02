@@ -1,7 +1,6 @@
 package main
 
 import (
-	"os"
 	"path"
 	"path/filepath"
 )
@@ -15,40 +14,41 @@ type Meta struct {
 	Meta *MetaYml
 	Root string
 	Cwd  string
+	util IUtil
 }
 
 func (m *Meta) MoveToRoot() {
-	os.Chdir(m.Root)
+	m.util.ChangeDir(m.Root)
 }
 
-func NewMeta() *Meta {
+func NewMeta(util IUtil) *Meta {
 	m := new(Meta)
-	currentDir, _ := os.Getwd()
-	m.Root = find(currentDir)
+	m.util = util
+	currentDir := util.GetCwd()
+	m.Root = m.find(currentDir)
 	m.Cwd = currentDir
 
 	if m.Found() {
-		m.Meta = ReadYml(".meta/meta.yml", new(MetaYml)).(*MetaYml)
+		m.Meta = util.ReadYml(".meta/meta.yml", new(MetaYml)).(*MetaYml)
 	}
 
 	return m
 }
 
 func (m *Meta) MoveToCwd() {
-	os.Chdir(m.Cwd)
+	m.util.ChangeDir(m.Cwd)
 }
 
 func (m *Meta) Found() bool {
 	return m.Root != "Not found"
 }
 
-func find(currentDir string) string {
+func (m *Meta) find(currentDir string) string {
 	metaFilePath := path.Join(currentDir, ".meta", "meta.yml")
-	if _, err := os.Stat(metaFilePath); err == nil {
+	if m.util.Exists(metaFilePath) {
 		return currentDir
-	}
-	if currentDir == "/" {
+	} else if currentDir == "/" {
 		return "Not found"
 	}
-	return find(filepath.Dir(currentDir))
+	return m.find(filepath.Dir(currentDir))
 }
