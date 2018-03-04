@@ -5,68 +5,76 @@ import (
 	"meta/meta"
 	"meta/meta/mocks"
 	"os"
+	"strings"
 	"testing"
 )
 
 type ParserTest struct {
 	suite.Suite
-	parser   *meta.Parser
-	language *mocks.ILanguage
-	template *mocks.ITemplate
+	parser  *meta.Parser
+	command *mocks.ICommand
 }
 
 func (suite *ParserTest) SetupTest() {
-	suite.language = new(mocks.ILanguage)
-	suite.template = new(mocks.ITemplate)
-	suite.parser = meta.NewParser(suite.language, suite.template, new(mocks.ILog))
+	suite.command = new(mocks.ICommand)
+	suite.parser = meta.NewParser(mockLanguageYml(), suite.command, new(mocks.ILog))
 }
 
 func (suite *ParserTest) TestInstall() {
-	suite.language.On("Install").Return()
-	suite.meta("install")
+	suite.command.On("Install").Return()
+	suite.shell("meta install")
 }
 
 func (suite *ParserTest) TestBuild() {
-	suite.language.On("Build").Return()
-	suite.meta("build")
+	suite.command.On("Language", []string{"build"}, false).Return()
+	suite.shell("meta build")
+	suite.command.AssertExpectations(suite.T())
+
+	suite.command.On("Language", []string{"build"}, true).Return()
+	suite.shell("meta --image-only build")
+	suite.command.AssertExpectations(suite.T())
 }
 
 func (suite *ParserTest) TestTest() {
-	suite.language.On("Test").Return()
-	suite.meta("test")
+	suite.command.On("Language", []string{"test"}, false).Return()
+	suite.shell("meta test")
+	suite.command.AssertExpectations(suite.T())
 }
 
 func (suite *ParserTest) TestLint() {
-	suite.language.On("Lint").Return()
-	suite.meta("lint")
+	suite.command.On("Language", []string{"lint"}, false).Return()
+	suite.shell("meta lint")
+	suite.command.AssertExpectations(suite.T())
 }
 
 func (suite *ParserTest) TestCoverage() {
-	suite.language.On("Coverage").Return()
-	suite.meta("coverage")
+	suite.command.On("Language", []string{"coverage"}, false).Return()
+	suite.shell("meta coverage")
+	suite.command.AssertExpectations(suite.T())
 }
 
 func (suite *ParserTest) TestEnter() {
-	suite.language.On("Enter").Return()
-	suite.meta("enter")
+	suite.command.On("Enter").Return()
+	suite.shell("meta enter")
 }
 
 func (suite *ParserTest) TestCI() {
-	suite.language.On("CI").Return()
-	suite.meta("ci")
+	suite.command.On("Language", []string{"ci1", "ci2"}, false).Return()
+	suite.shell("meta ci")
+	suite.command.AssertExpectations(suite.T())
 }
 
 func (suite *ParserTest) TestRun() {
-	suite.language.On("Run", []string{"go", "generate"}).Return()
-	suite.meta("run", "-c", "go generate")
+	suite.command.On("Run", []string{"command"}, false).Return()
+	suite.shell("meta run -c \"command\"")
+	suite.command.AssertExpectations(suite.T())
 }
 
-func (suite *ParserTest) meta(cmd ...string) {
+func (suite *ParserTest) shell(cmd string) {
 	oldArgs := os.Args
-	os.Args = append([]string{"meta"}, cmd...)
+	os.Args = strings.Split(cmd, " ")
 	suite.parser.Run()
 	os.Args = oldArgs
-	suite.language.AssertExpectations(suite.T())
 }
 
 func TestParserSuite(t *testing.T) {

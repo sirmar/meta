@@ -6,13 +6,13 @@ import (
 )
 
 type Parser struct {
-	language ILanguage
-	template ITemplate
-	log      ILog
+	languageYml *LanguageYml
+	command     ICommand
+	log         ILog
 }
 
-func NewParser(language ILanguage, template ITemplate, log ILog) *Parser {
-	return &Parser{language, template, log}
+func NewParser(languageYml *LanguageYml, command ICommand, log ILog) *Parser {
+	return &Parser{languageYml, command, log}
 }
 
 func (p *Parser) Run() {
@@ -54,29 +54,25 @@ func (p *Parser) Run() {
 		p.log.Fatal(err)
 	}
 
-	if flags.ImageOnly {
-		p.language.SetImageOnly()
-	}
-
 	if cmd.FlagArgs("Install") != nil {
-		p.language.Install()
-	} else if cmd.FlagArgs("Build") != nil {
-		p.language.Build()
-	} else if cmd.FlagArgs("Test") != nil {
-		p.language.Test()
-	} else if cmd.FlagArgs("Coverage") != nil {
-		p.language.Coverage()
-	} else if cmd.FlagArgs("Lint") != nil {
-		p.language.Lint()
-	} else if cmd.FlagArgs("CI") != nil {
-		p.language.CI()
+		p.command.Install()
 	} else if cmd.FlagArgs("Enter") != nil {
-		p.language.Enter()
+		p.command.Enter()
+	} else if cmd.FlagArgs("Build") != nil {
+		p.command.Language(p.languageYml.Build, flags.ImageOnly)
+	} else if cmd.FlagArgs("Test") != nil {
+		p.command.Language(p.languageYml.Test, flags.ImageOnly)
+	} else if cmd.FlagArgs("Coverage") != nil {
+		p.command.Language(p.languageYml.Coverage, flags.ImageOnly)
+	} else if cmd.FlagArgs("Lint") != nil {
+		p.command.Language(p.languageYml.Lint, flags.ImageOnly)
+	} else if cmd.FlagArgs("CI") != nil {
+		p.command.Language(p.languageYml.CI, flags.ImageOnly)
 	} else if cmd.FlagArgs("Run") != nil {
-		p.language.Run(strings.Split(flags.Run.Command, " "))
+		p.command.Run(strings.Split(flags.Run.Command, " "), flags.ImageOnly)
 	} else if cmd.FlagArgs("Create") != nil {
 		if cmd.FlagArgs("Create.Python") != nil {
-			p.template.Create(&MetaYml{flags.Create.Python.Name, "python"})
+			p.command.Create(flags.Create.Python.Name, "python")
 		} else {
 			p.log.Fatal("missing language for create command")
 		}

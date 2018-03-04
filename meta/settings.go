@@ -1,5 +1,9 @@
 package meta
 
+import (
+	"fmt"
+)
+
 type SettingsYml struct {
 	Author string
 	Email  string
@@ -14,21 +18,18 @@ type LanguageYml struct {
 }
 
 type Settings struct {
-	Settings *SettingsYml
-	Python   *LanguageYml
-	Golang   *LanguageYml
-	util     IUtil
+	util IUtil
 }
 
 func NewSettings(util IUtil) *Settings {
-	s := new(Settings)
-	s.util = util
-	return s
+	return &Settings{util}
 }
 
-func (s *Settings) Read() *Settings {
-	s.Settings = s.util.ReadYml("~/.meta/settings.yml", new(SettingsYml)).(*SettingsYml)
-	s.Python = s.util.ReadYml("~/.meta/python.yml", new(LanguageYml)).(*LanguageYml)
-	s.Golang = s.util.ReadYml("~/.meta/golang.yml", new(LanguageYml)).(*LanguageYml)
-	return s
+func (s *Settings) ReadSettings() *SettingsYml {
+	return s.util.ReadYml("~/.meta/settings.yml", new(SettingsYml)).(*SettingsYml)
+}
+
+func (s *Settings) ReadLanguage(language string) *LanguageYml {
+	path := fmt.Sprintf("~/.meta/%s.yml", language)
+	return s.util.ReadYml(path, new(LanguageYml)).(*LanguageYml)
 }

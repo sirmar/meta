@@ -8,7 +8,7 @@ type IRunner struct {
 	mock.Mock
 }
 
-// Run provides a mock function with given fields: args
-func (_m *IRunner) Run(args []string) {
-	_m.Called(args)
+// Run provides a mock function with given fields: cmd, args
+func (_m *IRunner) Run(cmd string, args []string) {
+	_m.Called(cmd, args)
 }

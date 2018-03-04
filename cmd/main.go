@@ -6,10 +6,13 @@ func main() {
 	log := meta.NewLog()
 	util := meta.NewUtil(log)
 	dotMeta := meta.NewDotMeta(util)
-	settings := meta.NewSettings(util).Read()
-	runner := meta.NewDockerRunner(log)
-	language := meta.NewLanguage(runner, dotMeta)
-	template := meta.NewTemplate(settings, util)
-	meta.NewParser(language, template, log).Run()
+	settings := meta.NewSettings(util)
 
+	languageYml := settings.ReadLanguage(dotMeta.MetaYml.Language)
+	settingsYml := settings.ReadSettings()
+
+	runner := meta.NewRunner(log)
+	template := meta.NewTemplate(util, settingsYml)
+	command := meta.NewCommand(runner, dotMeta, template)
+	meta.NewParser(languageYml, command, log).Run()
 }

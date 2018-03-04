@@ -9,20 +9,19 @@ import (
 )
 
 type IRunner interface {
-	Run(args []string)
+	Run(cmd string, args []string)
 }
 
 type Runner struct {
-	cmd string
 	log ILog
 }
 
-func (r *Runner) Run(args []string) {
-	r.log.Println("Running:", r.cmd, strings.Join(args, " "))
+func (r *Runner) Run(command string, args []string) {
+	r.log.Println("Running:", command, strings.Join(args, " "))
 
 	var stdoutBuf, stderrBuf bytes.Buffer
 
-	cmd := exec.Command(r.cmd, args...)
+	cmd := exec.Command(command, args...)
 
 	stdoutIn, _ := cmd.StdoutPipe()
 	stderrIn, _ := cmd.StderrPipe()
@@ -52,10 +51,6 @@ func (r *Runner) Run(args []string) {
 	}
 }
 
-func NewDockerRunner(log ILog) IRunner {
-	return NewRunner("docker", log)
-}
-
-func NewRunner(cmd string, log ILog) IRunner {
-	return &Runner{cmd, log}
+func NewRunner(log ILog) IRunner {
+	return &Runner{log}
 }

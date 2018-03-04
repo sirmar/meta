@@ -11,9 +11,9 @@ type MetaYml struct {
 }
 
 type DotMeta struct {
-	Meta *MetaYml
-	Root string
-	Util IUtil
+	MetaYml *MetaYml
+	Root    string
+	Util    IUtil
 }
 
 func NewDotMeta(util IUtil) *DotMeta {
@@ -25,7 +25,9 @@ func NewDotMeta(util IUtil) *DotMeta {
 	if m.Found() {
 		m.Util.ChangeDir(m.Root)
 		metaPath := path.Join(m.Root, ".meta", "meta.yml")
-		m.Meta = util.ReadYml(metaPath, new(MetaYml)).(*MetaYml)
+		m.MetaYml = util.ReadYml(metaPath, new(MetaYml)).(*MetaYml)
+	} else {
+		m.MetaYml = &MetaYml{"name", "python"}
 	}
 
 	return m
