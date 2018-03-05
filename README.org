@@ -3,12 +3,6 @@
 #+EMAIL: sirmar@gmail
 
 * Backlog
-** DONE Implement create
-CLOSED: [2018-03-02 Fri 19:21]
-** DONE Break out logging behind interface
-CLOSED: [2018-03-02 Fri 21:30]
-** TODO Development lifecycle commands (Build, Test, Lint...) should be read from settings
-** TODO Implement verify
-** TODO Bundle settings and install script with the binary in a tar ball
-** TODO Implement release/releases
-** TODO Implement upload
+- Implement verify
+- Implement release/releases
+- Implement upload
