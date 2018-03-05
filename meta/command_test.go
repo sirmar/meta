@@ -26,6 +26,14 @@ func (suite *CommandTest) TestInstall() {
 	suite.runner.AssertExpectations(suite.T())
 }
 
+func (suite *CommandTest) TestCI() {
+	suite.runner.On("Run", "docker", contains("build . --tag")).Return()
+	suite.runner.On("Run", "docker", contains("run name cmd1")).Return()
+	suite.runner.On("Run", "docker", contains("run name cmd2")).Return()
+	suite.command.CI([]string{"cmd1", "cmd2"})
+	suite.runner.AssertExpectations(suite.T())
+}
+
 func (suite *CommandTest) TestEnter() {
 	suite.runner.On("Run", "docker", contains("sh")).Return()
 	suite.command.Enter()
@@ -46,8 +54,7 @@ func (suite *CommandTest) TestCreate() {
 
 func (suite *CommandTest) TestLanguage() {
 	suite.runner.On("Run", "docker", contains("run name cmd1")).Return()
-	suite.runner.On("Run", "docker", contains("run name cmd2")).Return()
-	suite.command.Language([]string{"cmd1", "cmd2"}, true)
+	suite.command.Language([]string{"cmd1"}, true)
 	suite.runner.AssertExpectations(suite.T())
 
 	suite.runner.On("Run", "docker", contains("run -v /root:/usr/src/name name cmd")).Return()

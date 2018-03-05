@@ -67,7 +67,7 @@ func (p *Parser) Run() {
 	} else if cmd.FlagArgs("Lint") != nil {
 		p.command.Language(p.languageYml.Lint, flags.ImageOnly)
 	} else if cmd.FlagArgs("CI") != nil {
-		p.command.Language(p.languageYml.CI, flags.ImageOnly)
+		p.command.CI(p.languageYml.CI)
 	} else if cmd.FlagArgs("Run") != nil {
 		p.command.Run(strings.Split(flags.Run.Command, " "), flags.ImageOnly)
 	} else if cmd.FlagArgs("Create") != nil {

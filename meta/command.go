@@ -8,6 +8,7 @@ import (
 type ICommand interface {
 	Install()
 	Enter()
+	CI(cmds []string)
 	Run(args []string, imageOnly bool)
 	Create(name, language string)
 	Language(cmds []string, imageOnly bool)
@@ -29,6 +30,11 @@ func (self *Command) Install() {
 
 func (self *Command) Enter() {
 	self.runner.Run("docker", []string{"run", "-it", self.dotMeta.MetaYml.Name, "sh"})
+}
+
+func (self *Command) CI(cmds []string) {
+	self.Install()
+	self.Language(cmds, true)
 }
 
 func (self *Command) Run(args []string, imageOnly bool) {

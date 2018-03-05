@@ -8,6 +8,11 @@ type ICommand struct {
 	mock.Mock
 }
 
+// CI provides a mock function with given fields: cmds
+func (_m *ICommand) CI(cmds []string) {
+	_m.Called(cmds)
+}
+
 // Create provides a mock function with given fields: name, language
 func (_m *ICommand) Create(name string, language string) {
 	_m.Called(name, language)

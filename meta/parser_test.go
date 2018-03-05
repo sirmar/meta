@@ -59,7 +59,7 @@ func (suite *ParserTest) TestEnter() {
 }
 
 func (suite *ParserTest) TestCI() {
-	suite.command.On("Language", []string{"ci1", "ci2"}, false).Return()
+	suite.command.On("CI", []string{"ci1", "ci2"}).Return()
 	suite.shell("meta ci")
 	suite.command.AssertExpectations(suite.T())
 }
