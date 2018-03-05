@@ -8,7 +8,6 @@ docker build --quiet --tag meta:latest $ROOT
 rm -rf /tmp/meta
 mkdir -p /tmp/meta
 cp -r "$ROOT"/config /tmp/meta/
-cp -r "$ROOT"/etc/bash_completion /tmp/meta/
 
 echo "Building Mac bundle ..."
 docker run --rm \
