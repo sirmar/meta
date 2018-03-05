@@ -8,4 +8,4 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: meta -i ci
+      - run: meta ci
