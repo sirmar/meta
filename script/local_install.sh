@@ -25,4 +25,4 @@ mv -f /tmp/meta /usr/local/bin/meta
 echo "Install configuration files  ..."
 rm -rf ~/.meta
 cp -r "$ROOT"/config ~/.meta
-cp -f "$ROOT"/etc/bash_completion /usr/local/etc/bash_completion.d/meta
+source ~/.meta/bash_completion
