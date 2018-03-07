@@ -8,7 +8,21 @@ type ITemplate struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: name, language
-func (_m *ITemplate) Create(name string, language string) {
-	_m.Called(name, language)
+// ExecuteOnFile provides a mock function with given fields: sourcePath, targetPath, translation
+func (_m *ITemplate) ExecuteOnFile(sourcePath string, targetPath string, translation interface{}) {
+	_m.Called(sourcePath, targetPath, translation)
+}
+
+// ExecuteOnString provides a mock function with given fields: input, translation
+func (_m *ITemplate) ExecuteOnString(input string, translation interface{}) string {
+	ret := _m.Called(input, translation)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(string, interface{}) string); ok {
+		r0 = rf(input, translation)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
 }

@@ -5,15 +5,13 @@ import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
-	"os/exec"
-	"path"
 	"path/filepath"
 )
 
+//go:generate mockery -name=IUtil
 type IUtil interface {
 	ReadFile(path string) []byte
 	ReadYml(path string, dataStruct interface{}) interface{}
-	Cp(from, to string)
 	ChangeDir(dir string)
 	GetCwd() string
 	Exists(path string) bool
@@ -33,87 +31,81 @@ func NewUtil(log ILog) IUtil {
 	return &Util{log}
 }
 
-func (u *Util) ReadFile(path string) []byte {
-	content, err := ioutil.ReadFile(u.Expand(path))
+func (self *Util) ReadFile(path string) []byte {
+	content, err := ioutil.ReadFile(self.Expand(path))
 	if err != nil {
-		u.log.Fatal("Error in ReadFile:", err)
+		self.log.Fatal("Error in ReadFile:", err)
 	}
 	return content
 }
 
-func (u *Util) ReadYml(path string, dataStruct interface{}) interface{} {
-	if err := yaml.Unmarshal(u.ReadFile(path), dataStruct); err != nil {
-		u.log.Fatal("Error in ReadYml:", err)
+func (self *Util) ReadYml(path string, dataStruct interface{}) interface{} {
+	if err := yaml.Unmarshal(self.ReadFile(path), dataStruct); err != nil {
+		self.log.Fatal("Error in ReadYml:", err)
 	}
 	return dataStruct
 }
 
-func (u *Util) Cp(from, to string) {
-	if err := exec.Command("cp", "-r", u.Expand(from), u.Expand(to)).Run(); err != nil {
-		u.log.Fatal("Error in CopyFile:", err)
+func (self *Util) ChangeDir(dir string) {
+	if err := os.Chdir(self.Expand(dir)); err != nil {
+		self.log.Fatal("Error in ChangeDir:", err)
 	}
 }
 
-func (u *Util) ChangeDir(dir string) {
-	if err := os.Chdir(u.Expand(dir)); err != nil {
-		u.log.Fatal("Error in ChangeDir:", err)
-	}
-}
-
-func (u *Util) GetCwd() string {
+func (self *Util) GetCwd() string {
 	cwd, err := os.Getwd()
 	if err != nil {
-		u.log.Fatal("Error in GetCwd:", err)
+		self.log.Fatal("Error in GetCwd:", err)
 	}
 	return cwd
 }
 
-func (u *Util) Exists(path string) bool {
-	if _, err := os.Stat(u.Expand(path)); err == nil {
+func (self *Util) Exists(path string) bool {
+	if _, err := os.Stat(self.Expand(path)); err == nil {
 		return true
 	}
 	return false
 }
 
-func (u *Util) Mkdir(path string) {
+func (self *Util) Mkdir(path string) {
 	if err := os.Mkdir(path, os.ModePerm); err != nil {
-		u.log.Fatal("Error in Mkdir:", err)
+		self.log.Fatal("Error in Mkdir:", err)
 	}
 }
 
-func (u *Util) Rename(from, to string) {
-	if err := os.Rename(u.Expand(from), u.Expand(to)); err != nil {
-		u.log.Fatal("Error in Rename:", err)
+func (self *Util) Rename(from, to string) {
+	if err := os.Rename(self.Expand(from), self.Expand(to)); err != nil {
+		self.log.Fatal("Error in Rename:", err)
 	}
 }
 
-func (u *Util) Walk(root string, walkFn filepath.WalkFunc) {
-	if err := filepath.Walk(u.Expand(root), walkFn); err != nil {
-		u.log.Fatal("Error in Walk:", err)
+func (self *Util) Walk(root string, walkFn filepath.WalkFunc) {
+	if err := filepath.Walk(self.Expand(root), walkFn); err != nil {
+		self.log.Fatal("Error in Walk:", err)
 	}
 }
 
-func (u *Util) IsFile(path string) bool {
-	fi, err := os.Stat(u.Expand(path))
+func (self *Util) IsFile(path string) bool {
+	fi, err := os.Stat(self.Expand(path))
 	if err != nil {
-		u.log.Fatal("Error in IsFile:", err)
+		self.log.Fatal("Error in IsFile:", err)
 	}
 	return fi.Mode().IsRegular()
 }
 
-func (u *Util) CreateFile(filePath string) *os.File {
-	os.MkdirAll(path.Dir(u.Expand(filePath)), os.ModePerm)
-	f, err := os.Create(u.Expand(filePath))
+func (self *Util) CreateFile(filePath string) *os.File {
+	os.MkdirAll(filepath.Dir(self.Expand(filePath)), os.ModePerm)
+	f, err := os.Create(self.Expand(filePath))
 	if err != nil {
-		u.log.Fatal("Error in CreateFile:", err)
+		self.log.Fatal("Error in CreateFile:", err)
 	}
 	return f
 }
 
-func (u *Util) Expand(path string) string {
+func (self *Util) Expand(path string) string {
 	expanded, err := homedir.Expand(path)
 	if err != nil {
-		u.log.Fatal("Error in expand:", err)
+		self.log.Fatal("Error in expand:", err)
 	}
 	return expanded
 }

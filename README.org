@@ -3,6 +3,5 @@
 #+EMAIL: sirmar@gmail
 
 * Backlog
-- Implement verify
 - Implement release/releases
 - Implement upload

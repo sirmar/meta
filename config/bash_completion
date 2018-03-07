@@ -4,20 +4,28 @@ _meta()
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    commands="install build test coverage lint ci enter run create"
+    commands="install build test coverage lint ci enter run create verify"
 
     case "${prev}" in
         run)
-            local opts="--command"
+            local opts="-c --command"
             COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
             return 0
             ;;
         create)
-            local opts="python"
+            local opts="python golang"
             COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
             return 0
             ;;
-        *)
+        golang|python)
+            local opts="-n --name"
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
+        !(meta))
+            return 0
+            ;;
+	 *)
             ;;
     esac
 

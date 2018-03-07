@@ -1,68 +1,51 @@
 package meta
 
-import (
-	"fmt"
-	"strings"
-)
-
+//go:generate mockery -name=ICommand
 type ICommand interface {
 	Install()
 	Enter()
-	CI(cmds []string)
+	Stage(stage string, imageOnly bool)
+	CI()
 	Run(args []string, imageOnly bool)
-	Create(name, language string)
-	Language(cmds []string, imageOnly bool)
+	Create(language, name string)
+	Verify()
 }
 
 type Command struct {
-	runner   IRunner
-	dotMeta  *DotMeta
-	template ITemplate
+	develop IDevelop
+	create  ICreate
+	verify  IVerify
 }
 
-func NewCommand(runner IRunner, dotMeta *DotMeta, template ITemplate) ICommand {
-	return &Command{runner, dotMeta, template}
+func NewCommand(develop IDevelop, create ICreate, verify IVerify) ICommand {
+	return &Command{develop, create, verify}
 }
 
 func (self *Command) Install() {
-	self.runner.Run("docker", []string{"build", ".", "--tag", self.dotMeta.MetaYml.Name})
+	self.develop.Install()
 }
 
 func (self *Command) Enter() {
-	self.runner.Run("docker", []string{"run", "-it", self.dotMeta.MetaYml.Name, "sh"})
+	self.develop.Enter()
 }
 
-func (self *Command) CI(cmds []string) {
+func (self *Command) Stage(stage string, imageOnly bool) {
+	self.develop.Stage(stage, imageOnly)
+}
+
+func (self *Command) CI() {
 	self.Install()
-	self.Language(cmds, true)
+	self.develop.Stage("ci", true)
 }
 
 func (self *Command) Run(args []string, imageOnly bool) {
-	self.runner.Run("docker", append(self.baseArgs(imageOnly), args...))
+	self.develop.Run(args, imageOnly)
 }
 
-func (self *Command) Create(name, language string) {
-	self.template.Create(name, language)
+func (self *Command) Create(language, name string) {
+	self.create.Template(language, name)
 }
 
-func (self *Command) Language(cmds []string, imageOnly bool) {
-	for _, cmd := range cmds {
-		parts := strings.Split(cmd, " ")
-		args := append(self.baseArgs(imageOnly), parts...)
-		self.runner.Run("docker", args)
-	}
-}
-
-func (self *Command) baseArgs(imageOnly bool) []string {
-	if imageOnly {
-		return []string{"run", self.dotMeta.MetaYml.Name}
-	}
-	return []string{"run", "-v", self.volume(), self.dotMeta.MetaYml.Name}
-}
-
-func (self *Command) volume() string {
-	if self.dotMeta.MetaYml.Language == "golang" {
-		return fmt.Sprintf("%s:/go/src/%s", self.dotMeta.Root, self.dotMeta.MetaYml.Name)
-	}
-	return fmt.Sprintf("%s:/usr/src/%s", self.dotMeta.Root, self.dotMeta.MetaYml.Name)
+func (self *Command) Verify() {
+	self.verify.Files()
 }

@@ -1,14 +1,13 @@
-build: []
+stages:
+  test:
+    - nosestests test
 
-test:
-  - nosestests test
+  lint:
+    - flake8 setup.py test {{:Name}}
 
-lint:
-  - flake8 setup.py test {{name}}
+  coverage:
+    - nosestests --with-coverage test
 
-coverage:
-  - nosestests --with-coverage test
-
-ci:
-  - flake8 setup.py test {{name}}
-  - nosestests --with-coverage test
+  ci:
+    - flake8 setup.py test {{:Name}}
+    - nosestests --with-coverage test

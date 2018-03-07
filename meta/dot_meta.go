@@ -2,7 +2,6 @@ package meta
 
 import (
 	"path"
-	"path/filepath"
 )
 
 type MetaYml struct {
@@ -10,39 +9,36 @@ type MetaYml struct {
 	Language string
 }
 
+//go:generate mockery -name=IDotMeta
+type IDotMeta interface {
+	ReadMetaYml() *MetaYml
+	MoveToRoot()
+}
+
 type DotMeta struct {
-	MetaYml *MetaYml
-	Root    string
-	Util    IUtil
+	util IUtil
 }
 
-func NewDotMeta(util IUtil) *DotMeta {
-	m := new(DotMeta)
-	m.Util = util
-	currentDir := util.GetCwd()
-	m.Root = m.find(currentDir)
+func NewDotMeta(util IUtil) IDotMeta {
+	return &DotMeta{util}
+}
 
-	if m.Found() {
-		m.Util.ChangeDir(m.Root)
-		metaPath := path.Join(m.Root, ".meta", "meta.yml")
-		m.MetaYml = util.ReadYml(metaPath, new(MetaYml)).(*MetaYml)
-	} else {
-		m.MetaYml = &MetaYml{"name", "python"}
+func (self *DotMeta) ReadMetaYml() *MetaYml {
+	return self.util.ReadYml(path.Join(".meta", "meta.yml"), new(MetaYml)).(*MetaYml)
+}
+
+func (self *DotMeta) MoveToRoot() {
+	if root := self.find(self.util.GetCwd()); root != "" {
+		self.util.ChangeDir(root)
 	}
-
-	return m
 }
 
-func (m *DotMeta) Found() bool {
-	return m.Root != "Not found"
-}
-
-func (m *DotMeta) find(currentDir string) string {
+func (self *DotMeta) find(currentDir string) string {
 	metaFilePath := path.Join(currentDir, ".meta", "meta.yml")
-	if m.Util.Exists(metaFilePath) {
+	if self.util.Exists(metaFilePath) {
 		return currentDir
 	} else if currentDir == "/" {
-		return "Not found"
+		return ""
 	}
-	return m.find(filepath.Dir(currentDir))
+	return self.find(path.Dir(currentDir))
 }

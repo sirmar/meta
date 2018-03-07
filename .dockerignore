@@ -1,10 +1,10 @@
 Dockerfile
 README.org
-templates
 .meta
 .git
 .gitignore
-.cache
-push_development_environment.sh
-install_meta.sh
-installed
+.dockerignore
+
+script
+.circleci
+bundle

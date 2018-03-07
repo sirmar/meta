@@ -8,14 +8,14 @@ type ICommand struct {
 	mock.Mock
 }
 
-// CI provides a mock function with given fields: cmds
-func (_m *ICommand) CI(cmds []string) {
-	_m.Called(cmds)
+// CI provides a mock function with given fields:
+func (_m *ICommand) CI() {
+	_m.Called()
 }
 
-// Create provides a mock function with given fields: name, language
-func (_m *ICommand) Create(name string, language string) {
-	_m.Called(name, language)
+// Create provides a mock function with given fields: language, name
+func (_m *ICommand) Create(language string, name string) {
+	_m.Called(language, name)
 }
 
 // Enter provides a mock function with given fields:
@@ -28,12 +28,17 @@ func (_m *ICommand) Install() {
 	_m.Called()
 }
 
-// Language provides a mock function with given fields: cmds, imageOnly
-func (_m *ICommand) Language(cmds []string, imageOnly bool) {
-	_m.Called(cmds, imageOnly)
-}
-
 // Run provides a mock function with given fields: args, imageOnly
 func (_m *ICommand) Run(args []string, imageOnly bool) {
 	_m.Called(args, imageOnly)
+}
+
+// Stage provides a mock function with given fields: stage, imageOnly
+func (_m *ICommand) Stage(stage string, imageOnly bool) {
+	_m.Called(stage, imageOnly)
+}
+
+// Verify provides a mock function with given fields:
+func (_m *ICommand) Verify() {
+	_m.Called()
 }

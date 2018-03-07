@@ -9,57 +9,60 @@ import (
 
 type CommandTest struct {
 	suite.Suite
-	command  meta.ICommand
-	runner   *mocks.IRunner
-	template *mocks.ITemplate
+	command meta.ICommand
+	develop *mocks.IDevelop
+	create  *mocks.ICreate
+	verify  *mocks.IVerify
 }
 
 func (suite *CommandTest) SetupTest() {
-	suite.runner = new(mocks.IRunner)
-	suite.template = new(mocks.ITemplate)
-	suite.command = meta.NewCommand(suite.runner, mockDotMeta(), suite.template)
+	suite.develop = new(mocks.IDevelop)
+	suite.create = new(mocks.ICreate)
+	suite.verify = new(mocks.IVerify)
+	suite.command = meta.NewCommand(suite.develop, suite.create, suite.verify)
 }
 
 func (suite *CommandTest) TestInstall() {
-	suite.runner.On("Run", "docker", contains("build . --tag")).Return()
+	suite.develop.On("Install").Return()
 	suite.command.Install()
-	suite.runner.AssertExpectations(suite.T())
-}
-
-func (suite *CommandTest) TestCI() {
-	suite.runner.On("Run", "docker", contains("build . --tag")).Return()
-	suite.runner.On("Run", "docker", contains("run name cmd1")).Return()
-	suite.runner.On("Run", "docker", contains("run name cmd2")).Return()
-	suite.command.CI([]string{"cmd1", "cmd2"})
-	suite.runner.AssertExpectations(suite.T())
+	suite.develop.AssertExpectations(suite.T())
 }
 
 func (suite *CommandTest) TestEnter() {
-	suite.runner.On("Run", "docker", contains("sh")).Return()
+	suite.develop.On("Enter").Return()
 	suite.command.Enter()
-	suite.runner.AssertExpectations(suite.T())
+	suite.develop.AssertExpectations(suite.T())
+}
+
+func (suite *CommandTest) TestState() {
+	suite.develop.On("Stage", "build", false).Return()
+	suite.command.Stage("build", false)
+	suite.develop.AssertExpectations(suite.T())
+}
+
+func (suite *CommandTest) TestCI() {
+	suite.develop.On("Install").Return()
+	suite.develop.On("Stage", "ci", true).Return()
+	suite.command.CI()
+	suite.develop.AssertExpectations(suite.T())
 }
 
 func (suite *CommandTest) TestRun() {
-	suite.runner.On("Run", "docker", contains("run this")).Return()
-	suite.command.Run([]string{"run", "this"}, false)
-	suite.runner.AssertExpectations(suite.T())
+	suite.develop.On("Run", []string{"args"}, false).Return()
+	suite.command.Run([]string{"args"}, false)
+	suite.develop.AssertExpectations(suite.T())
 }
 
 func (suite *CommandTest) TestCreate() {
-	suite.template.On("Create", "name", "language").Return()
-	suite.command.Create("name", "language")
-	suite.runner.AssertExpectations(suite.T())
+	suite.create.On("Template", "language", "name").Return()
+	suite.command.Create("language", "name")
+	suite.create.AssertExpectations(suite.T())
 }
 
-func (suite *CommandTest) TestLanguage() {
-	suite.runner.On("Run", "docker", contains("run name cmd1")).Return()
-	suite.command.Language([]string{"cmd1"}, true)
-	suite.runner.AssertExpectations(suite.T())
-
-	suite.runner.On("Run", "docker", contains("run -v /root:/usr/src/name name cmd")).Return()
-	suite.command.Language([]string{"cmd"}, false)
-	suite.runner.AssertExpectations(suite.T())
+func (suite *CommandTest) TestVerify() {
+	suite.verify.On("Files").Return()
+	suite.command.Verify()
+	suite.verify.AssertExpectations(suite.T())
 }
 
 func TestCommandSuite(t *testing.T) {

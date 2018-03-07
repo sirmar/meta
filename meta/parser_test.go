@@ -1,6 +1,7 @@
 package meta_test
 
 import (
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 	"meta/meta"
 	"meta/meta/mocks"
@@ -12,12 +13,17 @@ import (
 type ParserTest struct {
 	suite.Suite
 	parser  *meta.Parser
+	dotMeta *mocks.IDotMeta
 	command *mocks.ICommand
+	log     *mocks.ILog
 }
 
 func (suite *ParserTest) SetupTest() {
+	suite.dotMeta = new(mocks.IDotMeta)
+	suite.dotMeta.On("MoveToRoot").Return()
 	suite.command = new(mocks.ICommand)
-	suite.parser = meta.NewParser(mockLanguageYml(), suite.command, new(mocks.ILog))
+	suite.log = new(mocks.ILog)
+	suite.parser = meta.NewParser(suite.dotMeta, suite.command, suite.log)
 }
 
 func (suite *ParserTest) TestInstall() {
@@ -26,29 +32,29 @@ func (suite *ParserTest) TestInstall() {
 }
 
 func (suite *ParserTest) TestBuild() {
-	suite.command.On("Language", []string{"build"}, false).Return()
+	suite.command.On("Stage", "build", false).Return()
 	suite.shell("meta build")
 	suite.command.AssertExpectations(suite.T())
 
-	suite.command.On("Language", []string{"build"}, true).Return()
+	suite.command.On("Stage", "build", true).Return()
 	suite.shell("meta --image-only build")
 	suite.command.AssertExpectations(suite.T())
 }
 
 func (suite *ParserTest) TestTest() {
-	suite.command.On("Language", []string{"test"}, false).Return()
+	suite.command.On("Stage", "test", false).Return()
 	suite.shell("meta test")
 	suite.command.AssertExpectations(suite.T())
 }
 
 func (suite *ParserTest) TestLint() {
-	suite.command.On("Language", []string{"lint"}, false).Return()
+	suite.command.On("Stage", "lint", false).Return()
 	suite.shell("meta lint")
 	suite.command.AssertExpectations(suite.T())
 }
 
 func (suite *ParserTest) TestCoverage() {
-	suite.command.On("Language", []string{"coverage"}, false).Return()
+	suite.command.On("Stage", "coverage", false).Return()
 	suite.shell("meta coverage")
 	suite.command.AssertExpectations(suite.T())
 }
@@ -59,7 +65,7 @@ func (suite *ParserTest) TestEnter() {
 }
 
 func (suite *ParserTest) TestCI() {
-	suite.command.On("CI", []string{"ci1", "ci2"}).Return()
+	suite.command.On("CI").Return()
 	suite.shell("meta ci")
 	suite.command.AssertExpectations(suite.T())
 }
@@ -68,6 +74,31 @@ func (suite *ParserTest) TestRun() {
 	suite.command.On("Run", []string{"command"}, false).Return()
 	suite.shell("meta run -c \"command\"")
 	suite.command.AssertExpectations(suite.T())
+}
+
+func (suite *ParserTest) TestVerify() {
+	suite.command.On("Verify").Return()
+	suite.shell("meta verify")
+	suite.command.AssertExpectations(suite.T())
+}
+
+// func (suite *ParserTest) TestCreatePython() {
+// 	suite.command.On("Create", "python", "name").Return()
+// 	suite.shell("meta create python --mame name")
+// 	suite.command.AssertExpectations(suite.T())
+// }
+
+func (suite *ParserTest) TestCreateGolang() {
+	suite.command.On("Create", "golang", "name").Return()
+	suite.shell("meta create golang --name name")
+	suite.command.AssertExpectations(suite.T())
+}
+
+func (suite *ParserTest) TestUnvalidCommand() {
+	suite.log.On("Fatal", mock.Anything).Run(func(args mock.Arguments) {
+		suite.Equal(args.Error(0).Error(), "unknown argument: unvalid")
+	})
+	suite.shell("meta unvalid")
 }
 
 func (suite *ParserTest) shell(cmd string) {

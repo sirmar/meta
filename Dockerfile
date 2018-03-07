@@ -20,4 +20,7 @@ RUN go get \
 COPY . .
 
 # Build binary
-RUN go build ./...
+RUN cp -r config ~/.meta
+RUN go build -o /go/bin/meta ./cmd
+
+CMD /go/bin/meta

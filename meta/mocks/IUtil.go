@@ -16,11 +16,6 @@ func (_m *IUtil) ChangeDir(dir string) {
 	_m.Called(dir)
 }
 
-// Cp provides a mock function with given fields: from, to
-func (_m *IUtil) Cp(from string, to string) {
-	_m.Called(from, to)
-}
-
 // CreateFile provides a mock function with given fields: path
 func (_m *IUtil) CreateFile(path string) *os.File {
 	ret := _m.Called(path)

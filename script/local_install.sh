@@ -25,4 +25,5 @@ mv -f /tmp/meta /usr/local/bin/meta
 echo "Install configuration files  ..."
 rm -rf ~/.meta
 cp -r "$ROOT"/config ~/.meta
-source ~/.meta/bash_completion
+
+echo "Run: 'source ~/.meta/bash_completion' to activate completion."

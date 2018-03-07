@@ -1,0 +1,13 @@
+requiredFiles:
+  Dockerfile:
+
+  .dockerignore:
+    - .git
+    - .gitignore
+    - Dockerfile
+    - .dockerignore
+    - .meta
+
+  .meta/meta.yml:
+    - name
+    - language
