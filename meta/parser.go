@@ -9,6 +9,7 @@ type CommandLine struct {
 	Help      bool     `short:"h" long:"help" description:"Display usage" global:"true"`
 	ImageOnly bool     `short:"i" long:"image-only" description:"Run based on docker image without using any volumes to see local changes" global:"true"`
 	Version   bool     `short:"v" long:"version" description:"Display version"`
+	Setup     struct{} `command:"setup" description:"Setup up your meta configuration"`
 	Install   struct{} `command:"install" description:"Build the docker image that will install all dependencies"`
 	Build     struct{} `command:"build" description:"Build the current project"`
 	Test      struct{} `command:"test" description:"Run tests on the current project"`
@@ -20,14 +21,18 @@ type CommandLine struct {
 		Command string `short:"c" long:"command" required:"true" description:"Command"`
 	} `command:"run" description:"run description"`
 	Create struct {
-		// Python struct {
-		// 	Name string `short:"m" long:"mame" required:"true" description:"Name of new project"`
-		// } `command:"python" description:"Create a template python project"`
+		Python struct {
+			Name string `short:"n" long:"name" required:"true" description:"Name of new project"`
+		} `command:"python" description:"Create a template python project"`
 		Golang struct {
 			Name string `short:"n" long:"name" required:"true" description:"Name of new project"`
 		} `command:"golang" description:"Create a template golang project"`
+		General struct {
+			Name string `short:"n" long:"name" required:"true" description:"Name of new project"`
+		} `command:"general" description:"Create a minimal template project"`
 	} `command:"create"`
 	Verify struct{} `command:"verify" description:"Verify then project is suitable for this tool"`
+	Upload struct{} `command:"upload" description:"Upload docker image/package to server"`
 }
 
 type Parser struct {
@@ -85,19 +90,25 @@ func (self *Parser) metaCommands(cmd *gocmd.Cmd, flags *CommandLine) {
 		self.command.Run(strings.Split(flags.Run.Command, " "), flags.ImageOnly)
 	} else if cmd.FlagArgs("Verify") != nil {
 		self.command.Verify()
+	} else if cmd.FlagArgs("Upload") != nil {
+		self.command.Upload()
 	}
 }
 
 func (self *Parser) otherCommands(cmd *gocmd.Cmd, flags *CommandLine) {
 	if cmd.FlagArgs("Create") != nil {
 		if cmd.FlagArgs("Create.Python") != nil {
-			//self.command.Create("python", flags.Create.Python.Name)
+			self.command.Create("python", flags.Create.Python.Name)
 		} else if cmd.FlagArgs("Create.Golang") != nil {
 			self.command.Create("golang", flags.Create.Golang.Name)
+		} else if cmd.FlagArgs("Create.General") != nil {
+			self.command.Create("general", flags.Create.General.Name)
 		}
+	} else if cmd.FlagArgs("Setup") != nil {
+		self.command.Setup()
 	}
 }
 
 func (self *Parser) dotMetaIsRequired(cmd *gocmd.Cmd) bool {
-	return cmd.FlagArgs("Create") == nil
+	return cmd.FlagArgs("Create") == nil && cmd.FlagArgs("Setup") == nil
 }

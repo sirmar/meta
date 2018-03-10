@@ -9,22 +9,6 @@ type ISettings struct {
 	mock.Mock
 }
 
-// ReadCreateYml provides a mock function with given fields:
-func (_m *ISettings) ReadCreateYml() *meta.CreateYml {
-	ret := _m.Called()
-
-	var r0 *meta.CreateYml
-	if rf, ok := ret.Get(0).(func() *meta.CreateYml); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*meta.CreateYml)
-		}
-	}
-
-	return r0
-}
-
 // ReadLanguageYml provides a mock function with given fields: language
 func (_m *ISettings) ReadLanguageYml(language string) *meta.LanguageYml {
 	ret := _m.Called(language)
@@ -35,6 +19,22 @@ func (_m *ISettings) ReadLanguageYml(language string) *meta.LanguageYml {
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*meta.LanguageYml)
+		}
+	}
+
+	return r0
+}
+
+// ReadSettingsYml provides a mock function with given fields:
+func (_m *ISettings) ReadSettingsYml() *meta.SettingsYml {
+	ret := _m.Called()
+
+	var r0 *meta.SettingsYml
+	if rf, ok := ret.Get(0).(func() *meta.SettingsYml); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*meta.SettingsYml)
 		}
 	}
 
@@ -71,4 +71,9 @@ func (_m *ISettings) Translation(metaYml *meta.MetaYml) interface{} {
 	}
 
 	return r0
+}
+
+// WriteSettingsYml provides a mock function with given fields: settingsYml
+func (_m *ISettings) WriteSettingsYml(settingsYml *meta.SettingsYml) {
+	_m.Called(settingsYml)
 }

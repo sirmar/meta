@@ -49,6 +49,13 @@ func (suite *DevelopTest) TestStage() {
 	suite.runner.AssertExpectations(suite.T())
 }
 
+func (suite *DevelopTest) TestUpload() {
+	suite.dotMeta.On("ReadMetaYml").Return(&meta.MetaYml{"name", "language"})
+	suite.runner.On("Run", "docker", contains("push name")).Return()
+	suite.develop.Upload()
+	suite.runner.AssertExpectations(suite.T())
+}
+
 func (suite *DevelopTest) TestRunInGolang() {
 	suite.dotMeta.On("ReadMetaYml").Return(&meta.MetaYml{"name", "golang"})
 	suite.util.On("GetCwd").Return("/root")

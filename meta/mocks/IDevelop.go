@@ -27,3 +27,8 @@ func (_m *IDevelop) Run(args []string, imageOnly bool) {
 func (_m *IDevelop) Stage(stage string, imageOnly bool) {
 	_m.Called(stage, imageOnly)
 }
+
+// Upload provides a mock function with given fields:
+func (_m *IDevelop) Upload() {
+	_m.Called()
+}

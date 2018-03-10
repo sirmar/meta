@@ -23,11 +23,11 @@ func NewCreate(util IUtil, settings ISettings, template ITemplate) ICreate {
 
 func (self *Create) Template(language, name string) {
 	walkRoot := path.Join(self.util.Expand("~"), ".meta", "templates", language)
-	translation := self.settings.Translation(&MetaYml{language, name})
+	translation := self.settings.Translation(&MetaYml{name, language})
 	self.util.Walk(walkRoot, func(walkPath string, _ os.FileInfo, _ error) error {
 		if self.util.IsFile(walkPath) {
-			soucePathTemplate, _ := filepath.Rel(walkRoot, walkPath)
-			targetPathTemplate := path.Join(name, soucePathTemplate)
+			soucePath, _ := filepath.Rel(walkRoot, walkPath)
+			targetPathTemplate := path.Join(name, soucePath)
 			targetPath := self.template.ExecuteOnString(targetPathTemplate, translation)
 			self.template.ExecuteOnFile(walkPath, targetPath, translation)
 		}

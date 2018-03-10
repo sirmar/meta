@@ -2,6 +2,4 @@
 #+AUTHOR: Marcus Veibäck
 #+EMAIL: sirmar@gmail
 
-* Backlog
-- Implement release/releases
-- Implement upload
+Single interface for your programming cycle across all languages. No need to install languages and tools on your machine.

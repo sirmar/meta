@@ -33,9 +33,19 @@ func (_m *ICommand) Run(args []string, imageOnly bool) {
 	_m.Called(args, imageOnly)
 }
 
+// Setup provides a mock function with given fields:
+func (_m *ICommand) Setup() {
+	_m.Called()
+}
+
 // Stage provides a mock function with given fields: stage, imageOnly
 func (_m *ICommand) Stage(stage string, imageOnly bool) {
 	_m.Called(stage, imageOnly)
+}
+
+// Upload provides a mock function with given fields:
+func (_m *ICommand) Upload() {
+	_m.Called()
 }
 
 // Verify provides a mock function with given fields:

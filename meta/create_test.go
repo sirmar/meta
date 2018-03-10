@@ -26,7 +26,7 @@ func (suite *CreateTest) SetupTest() {
 }
 
 func (suite *CreateTest) TestDirectory() {
-	suite.givenTranslation(&meta.MetaYml{"golang", "newpkg"})
+	suite.givenTranslation(&meta.MetaYml{"newpkg", "golang"})
 	suite.givenDirectory()
 	suite.create.Template("golang", "newpkg")
 	suite.util.AssertExpectations(suite.T())
@@ -34,7 +34,7 @@ func (suite *CreateTest) TestDirectory() {
 }
 
 func (suite *CreateTest) TestFilePathAndContentWillBeTemplateExpanded() {
-	suite.givenTranslation(&meta.MetaYml{"golang", "newpkg"})
+	suite.givenTranslation(&meta.MetaYml{"newpkg", "golang"})
 	suite.givenFile("file_{{.Name}}")
 	suite.create.Template("golang", "newpkg")
 	suite.util.AssertExpectations(suite.T())
@@ -43,7 +43,7 @@ func (suite *CreateTest) TestFilePathAndContentWillBeTemplateExpanded() {
 
 func (suite *CreateTest) givenTranslation(metaYml *meta.MetaYml) {
 	suite.settings.On("Translation", metaYml).Return(
-		&meta.Translation{meta.CreateYml{"John", "john@email.com"}, *metaYml})
+		&meta.Translation{meta.SettingsYml{"John", "john@email.com", "url", "namespace", "user"}, *metaYml})
 }
 
 func (suite *CreateTest) givenDirectory() {

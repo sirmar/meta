@@ -27,6 +27,7 @@ func (self *Template) ExecuteOnString(input string, translation interface{}) str
 
 func (self *Template) ExecuteOnFile(sourcePath, targetPath string, translation interface{}) {
 	newFile := self.util.CreateFile(targetPath)
+	newFile.Chmod(self.util.Mode(sourcePath))
 	template.Must(template.ParseFiles(sourcePath)).Execute(newFile, translation)
 	newFile.Close()
 }

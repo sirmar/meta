@@ -2,9 +2,11 @@ package meta
 
 //go:generate mockery -name=ICommand
 type ICommand interface {
+	Setup()
 	Install()
 	Enter()
 	Stage(stage string, imageOnly bool)
+	Upload()
 	CI()
 	Run(args []string, imageOnly bool)
 	Create(language, name string)
@@ -15,10 +17,11 @@ type Command struct {
 	develop IDevelop
 	create  ICreate
 	verify  IVerify
+	setup   ISetup
 }
 
-func NewCommand(develop IDevelop, create ICreate, verify IVerify) ICommand {
-	return &Command{develop, create, verify}
+func NewCommand(develop IDevelop, create ICreate, verify IVerify, setup ISetup) ICommand {
+	return &Command{develop, create, verify, setup}
 }
 
 func (self *Command) Install() {
@@ -31,6 +34,10 @@ func (self *Command) Enter() {
 
 func (self *Command) Stage(stage string, imageOnly bool) {
 	self.develop.Stage(stage, imageOnly)
+}
+
+func (self *Command) Upload() {
+	self.develop.Upload()
 }
 
 func (self *Command) CI() {
@@ -48,4 +55,8 @@ func (self *Command) Create(language, name string) {
 
 func (self *Command) Verify() {
 	self.verify.Files()
+}
+
+func (self *Command) Setup() {
+	self.setup.Run()
 }

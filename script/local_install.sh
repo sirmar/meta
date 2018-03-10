@@ -11,7 +11,7 @@ if [ $ARCH == 'Darwin' ]; then
     docker run --rm \
 	   -v /tmp:/go/bin \
 	   -e GOOS=darwin \
-	   -e GOARCH=386 \
+	   -e GOARCH=amd64 \
 	   meta:latest \
 	   go build -o /go/bin/meta ./cmd
 else

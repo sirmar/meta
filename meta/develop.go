@@ -10,6 +10,7 @@ type IDevelop interface {
 	Install()
 	Enter()
 	Stage(stage string, imageOnly bool)
+	Upload()
 	Run(args []string, imageOnly bool)
 }
 
@@ -41,6 +42,11 @@ func (self *Develop) Stage(stage string, imageOnly bool) {
 		args := append(self.baseArgs(metaYml, imageOnly), parts...)
 		self.runner.Run("docker", args)
 	}
+}
+
+func (self *Develop) Upload() {
+	metaYml := self.dotMeta.ReadMetaYml()
+	self.runner.Run("docker", []string{"push", metaYml.Name})
 }
 
 func (self *Develop) Run(args []string, imageOnly bool) {

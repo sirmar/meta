@@ -74,6 +74,20 @@ func (_m *IUtil) GetCwd() string {
 	return r0
 }
 
+// Input provides a mock function with given fields: text
+func (_m *IUtil) Input(text string) string {
+	ret := _m.Called(text)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(string) string); ok {
+		r0 = rf(text)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
 // IsFile provides a mock function with given fields: path
 func (_m *IUtil) IsFile(path string) bool {
 	ret := _m.Called(path)
@@ -91,6 +105,20 @@ func (_m *IUtil) IsFile(path string) bool {
 // Mkdir provides a mock function with given fields: path
 func (_m *IUtil) Mkdir(path string) {
 	_m.Called(path)
+}
+
+// Mode provides a mock function with given fields: path
+func (_m *IUtil) Mode(path string) os.FileMode {
+	ret := _m.Called(path)
+
+	var r0 os.FileMode
+	if rf, ok := ret.Get(0).(func(string) os.FileMode); ok {
+		r0 = rf(path)
+	} else {
+		r0 = ret.Get(0).(os.FileMode)
+	}
+
+	return r0
 }
 
 // ReadFile provides a mock function with given fields: path
@@ -130,7 +158,33 @@ func (_m *IUtil) Rename(from string, to string) {
 	_m.Called(from, to)
 }
 
+// Stat provides a mock function with given fields: path
+func (_m *IUtil) Stat(path string) os.FileInfo {
+	ret := _m.Called(path)
+
+	var r0 os.FileInfo
+	if rf, ok := ret.Get(0).(func(string) os.FileInfo); ok {
+		r0 = rf(path)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(os.FileInfo)
+		}
+	}
+
+	return r0
+}
+
 // Walk provides a mock function with given fields: root, walkFn
 func (_m *IUtil) Walk(root string, walkFn filepath.WalkFunc) {
 	_m.Called(root, walkFn)
+}
+
+// WriteFile provides a mock function with given fields: path, content
+func (_m *IUtil) WriteFile(path string, content []byte) {
+	_m.Called(path, content)
+}
+
+// WriteYml provides a mock function with given fields: path, dataStruct
+func (_m *IUtil) WriteYml(path string, dataStruct interface{}) {
+	_m.Called(path, dataStruct)
 }

@@ -13,7 +13,7 @@ echo "Building Mac bundle ..."
 docker run --rm \
        -v /tmp/meta:/go/bin \
        -e GOOS=darwin \
-       -e GOARCH=386 \
+       -e GOARCH=amd64 \
        meta:latest \
        go build -o /go/bin/meta ./cmd
 tar -czf "$ROOT"/bundle/meta.mac.tar.gz -C /tmp meta

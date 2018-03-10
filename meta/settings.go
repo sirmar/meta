@@ -4,9 +4,12 @@ import (
 	"fmt"
 )
 
-type CreateYml struct {
-	Author string
-	Email  string
+type SettingsYml struct {
+	Author          string `yaml:"author" question:"Your name"`
+	Email           string `yaml:"email" question:"Your email"`
+	DockerRegistry  string `yaml:"docker-registry" question:"Url to docker registry"`
+	DockerNamespace string `yaml:"docker-namespace" question:"Namespace used in docker registry"`
+	DockerUser string `yaml:"docker-user" question:"User name used when logging in to docker registry"`
 }
 
 type VerifyYml struct {
@@ -18,7 +21,7 @@ type LanguageYml struct {
 }
 
 type Translation struct {
-	CreateYml
+	SettingsYml
 	MetaYml
 }
 
@@ -29,7 +32,8 @@ func (self *LanguageYml) Stage(stage string) []string {
 
 //go:generate mockery -name=ISettings
 type ISettings interface {
-	ReadCreateYml() *CreateYml
+	WriteSettingsYml(settingsYml *SettingsYml)
+	ReadSettingsYml() *SettingsYml
 	ReadVerifyYml() *VerifyYml
 	ReadLanguageYml(language string) *LanguageYml
 	Translation(metaYml *MetaYml) interface{}
@@ -43,8 +47,8 @@ func NewSettings(util IUtil) ISettings {
 	return &Settings{util}
 }
 
-func (self *Settings) ReadCreateYml() *CreateYml {
-	return self.util.ReadYml("~/.meta/create.yml", new(CreateYml)).(*CreateYml)
+func (self *Settings) ReadSettingsYml() *SettingsYml {
+	return self.util.ReadYml("~/.meta/settings.yml", new(SettingsYml)).(*SettingsYml)
 }
 
 func (self *Settings) ReadVerifyYml() *VerifyYml {
@@ -57,5 +61,9 @@ func (self *Settings) ReadLanguageYml(language string) *LanguageYml {
 }
 
 func (self *Settings) Translation(metaYml *MetaYml) interface{} {
-	return &Translation{*self.ReadCreateYml(), *metaYml}
+	return &Translation{*self.ReadSettingsYml(), *metaYml}
+}
+
+func (self *Settings) WriteSettingsYml(settingsYml *SettingsYml) {
+	self.util.WriteYml("~/.meta/settings.yml", settingsYml)
 }

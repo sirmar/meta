@@ -19,11 +19,21 @@ func (suite *SettingsTest) SetupTest() {
 	suite.settings = meta.NewSettings(suite.util)
 }
 
-func (suite *SettingsTest) TestReadCreateYml() {
-	suite.util.On("ReadYml", "~/.meta/create.yml", mock.Anything).Return(&meta.CreateYml{"author", "email"})
-	createYml := suite.settings.ReadCreateYml()
+func (suite *SettingsTest) TestReadSettingsYml() {
+	suite.util.On("ReadYml", "~/.meta/settings.yml", mock.Anything).Return(
+		&meta.SettingsYml{"author", "email", "url", "namespace", "user"})
+	createYml := suite.settings.ReadSettingsYml()
 	suite.Equal("author", createYml.Author)
 	suite.Equal("email", createYml.Email)
+	suite.Equal("url", createYml.DockerRegistry)
+	suite.Equal("namespace", createYml.DockerNamespace)
+	suite.Equal("user", createYml.DockerUser)
+}
+
+func (suite *SettingsTest) TestWriteSettingsYml() {
+	suite.util.On("WriteYml", "~/.meta/settings.yml", mock.Anything).Return()
+	suite.settings.WriteSettingsYml(&meta.SettingsYml{"author", "email", "url", "namespace", "user"})
+	suite.util.AssertExpectations(suite.T())
 }
 
 func (suite *SettingsTest) TestReadVerifyYml() {
@@ -40,11 +50,16 @@ func (suite *SettingsTest) TestReadLanguageYml() {
 	suite.Equal([]string{"build cmd"}, languageYml.Stage("build"))
 }
 
+
 func (suite *SettingsTest) TestTranslation() {
-	suite.util.On("ReadYml", "~/.meta/create.yml", mock.Anything).Return(&meta.CreateYml{"author", "email"})
+	suite.util.On("ReadYml", "~/.meta/settings.yml", mock.Anything).Return(
+		&meta.SettingsYml{"author", "email", "url", "namespace", "user"})
 	translation := suite.settings.Translation(&meta.MetaYml{"name", "language"}).(*meta.Translation)
 	suite.Equal("author", translation.Author)
 	suite.Equal("email", translation.Email)
+	suite.Equal("url", translation.DockerRegistry)
+	suite.Equal("namespace", translation.DockerNamespace)
+	suite.Equal("user", translation.DockerUser)
 	suite.Equal("name", translation.Name)
 	suite.Equal("language", translation.Language)
 }

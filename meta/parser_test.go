@@ -82,15 +82,33 @@ func (suite *ParserTest) TestVerify() {
 	suite.command.AssertExpectations(suite.T())
 }
 
-// func (suite *ParserTest) TestCreatePython() {
-// 	suite.command.On("Create", "python", "name").Return()
-// 	suite.shell("meta create python --mame name")
-// 	suite.command.AssertExpectations(suite.T())
-// }
+func (suite *ParserTest) TestUpload() {
+	suite.command.On("Upload").Return()
+	suite.shell("meta upload")
+	suite.command.AssertExpectations(suite.T())
+}
+
+func (suite *ParserTest) TestCreatePython() {
+	suite.command.On("Create", "python", "name").Return()
+	suite.shell("meta create python --name name")
+	suite.command.AssertExpectations(suite.T())
+}
 
 func (suite *ParserTest) TestCreateGolang() {
 	suite.command.On("Create", "golang", "name").Return()
 	suite.shell("meta create golang --name name")
+	suite.command.AssertExpectations(suite.T())
+}
+
+func (suite *ParserTest) TestCreateGeneral() {
+	suite.command.On("Create", "general", "name").Return()
+	suite.shell("meta create general --name name")
+	suite.command.AssertExpectations(suite.T())
+}
+
+func (suite *ParserTest) TestSetup() {
+	suite.command.On("Setup").Return()
+	suite.shell("meta setup")
 	suite.command.AssertExpectations(suite.T())
 }
 

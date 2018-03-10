@@ -13,13 +13,21 @@ type CommandTest struct {
 	develop *mocks.IDevelop
 	create  *mocks.ICreate
 	verify  *mocks.IVerify
+	setup   *mocks.ISetup
 }
 
 func (suite *CommandTest) SetupTest() {
 	suite.develop = new(mocks.IDevelop)
 	suite.create = new(mocks.ICreate)
 	suite.verify = new(mocks.IVerify)
-	suite.command = meta.NewCommand(suite.develop, suite.create, suite.verify)
+	suite.setup = new(mocks.ISetup)
+	suite.command = meta.NewCommand(suite.develop, suite.create, suite.verify, suite.setup)
+}
+
+func (suite *CommandTest) TestSetup() {
+	suite.setup.On("Run").Return()
+	suite.command.Setup()
+	suite.setup.AssertExpectations(suite.T())
 }
 
 func (suite *CommandTest) TestInstall() {

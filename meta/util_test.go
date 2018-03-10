@@ -28,9 +28,10 @@ func (suite *UtilTest) TearDownTest() {
 	os.RemoveAll(suite.tmp)
 }
 
-func (suite *UtilTest) TestReadFileAndExpand() {
+func (suite *UtilTest) TestReadWriteFileAndExpand() {
 	file := path.Join(suite.tmp, "file")
-	ioutil.WriteFile(file, []byte("content"), os.ModePerm)
+	suite.False(suite.util.Exists(file))
+	suite.util.WriteFile(file, []byte("content"))
 
 	suite.Equal([]byte("content"), suite.util.ReadFile(file))
 

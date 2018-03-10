@@ -6,21 +6,29 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"bufio"
+	"strings"
+	"fmt"
 )
 
 //go:generate mockery -name=IUtil
 type IUtil interface {
 	ReadFile(path string) []byte
 	ReadYml(path string, dataStruct interface{}) interface{}
+	WriteFile(path string, content []byte)
+	WriteYml(path string, dataStruct interface{})
 	ChangeDir(dir string)
 	GetCwd() string
 	Exists(path string) bool
 	Mkdir(path string)
 	Rename(from, to string)
 	Walk(root string, walkFn filepath.WalkFunc)
+	Stat(path string) os.FileInfo
+	Mode(path string) os.FileMode
 	IsFile(path string) bool
 	CreateFile(path string) *os.File
 	Expand(path string) string
+	Input(text string) string
 }
 
 type Util struct {
@@ -46,6 +54,20 @@ func (self *Util) ReadYml(path string, dataStruct interface{}) interface{} {
 	return dataStruct
 }
 
+func (self *Util) WriteFile(path string, content []byte) {
+	if err := ioutil.WriteFile(self.Expand(path), content, os.ModePerm); err != nil {
+		self.log.Fatal("Error in WriteFile:", err)
+	}
+}
+
+func (self *Util) WriteYml(path string, dataStruct interface{}) {
+	output, err := yaml.Marshal(dataStruct)
+	if err != nil {
+		self.log.Fatal("Error in WriteYml:", err)
+	}
+	self.WriteFile(path, output)
+}
+
 func (self *Util) ChangeDir(dir string) {
 	if err := os.Chdir(self.Expand(dir)); err != nil {
 		self.log.Fatal("Error in ChangeDir:", err)
@@ -53,6 +75,14 @@ func (self *Util) ChangeDir(dir string) {
 }
 
 func (self *Util) GetCwd() string {
+	cwd, err := os.Getwd()
+	if err != nil {
+		self.log.Fatal("Error in GetCwd:", err)
+	}
+	return cwd
+}
+
+func (self *Util) Chmod(name string, mode os.FileMode) string {
 	cwd, err := os.Getwd()
 	if err != nil {
 		self.log.Fatal("Error in GetCwd:", err)
@@ -85,12 +115,20 @@ func (self *Util) Walk(root string, walkFn filepath.WalkFunc) {
 	}
 }
 
-func (self *Util) IsFile(path string) bool {
+func (self *Util) Stat(path string) os.FileInfo {
 	fi, err := os.Stat(self.Expand(path))
 	if err != nil {
-		self.log.Fatal("Error in IsFile:", err)
+		self.log.Fatal("Error in Stat:", err)
 	}
-	return fi.Mode().IsRegular()
+	return fi
+}
+
+func (self *Util) IsFile(path string) bool {
+	return self.Stat(path).Mode().IsRegular()
+}
+
+func (self *Util) Mode(path string) os.FileMode {
+	return self.Stat(path).Mode()
 }
 
 func (self *Util) CreateFile(filePath string) *os.File {
@@ -108,4 +146,11 @@ func (self *Util) Expand(path string) string {
 		self.log.Fatal("Error in expand:", err)
 	}
 	return expanded
+}
+
+func (self *Util) Input(text string) string {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print(text)
+	input, _ := reader.ReadString('\n')
+	return strings.TrimSpace(input)
 }

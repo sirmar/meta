@@ -1,0 +1,6 @@
+author: Your Name
+email: your@email.com
+
+docker-registry: registry.hub.docker.com
+docker-namespace: sirmar
+docker-user: sirmar
