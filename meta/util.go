@@ -1,14 +1,14 @@
 package meta
 
 import (
+	"bufio"
+	"fmt"
 	"github.com/mitchellh/go-homedir"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"bufio"
 	"strings"
-	"fmt"
 )
 
 //go:generate mockery -name=IUtil

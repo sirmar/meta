@@ -27,7 +27,7 @@ func (self *Setup) Run() {
 	for i := 0; i < settingsType.NumField(); i++ {
 		current := settingsValue.Elem().Field(i).String()
 		tag := settingsType.Field(i).Tag.Get("question")
-		value := self.util.Input(fmt.Sprint("%s (%s): ", tag, current))
+		value := self.util.Input(fmt.Sprintf("%s (%s): ", tag, current))
 		if len(value) > 0 {
 			settingsValue.Elem().Field(i).SetString(value)
 		}

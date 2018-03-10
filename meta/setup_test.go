@@ -11,8 +11,8 @@ import (
 type SetupTest struct {
 	suite.Suite
 	util     *mocks.IUtil
-	settings     *mocks.ISettings
-	setup meta.ISetup
+	settings *mocks.ISettings
+	setup    meta.ISetup
 }
 
 func (suite *SetupTest) SetupTest() {

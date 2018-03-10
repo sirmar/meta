@@ -50,7 +50,6 @@ func (suite *SettingsTest) TestReadLanguageYml() {
 	suite.Equal([]string{"build cmd"}, languageYml.Stage("build"))
 }
 
-
 func (suite *SettingsTest) TestTranslation() {
 	suite.util.On("ReadYml", "~/.meta/settings.yml", mock.Anything).Return(
 		&meta.SettingsYml{"author", "email", "url", "namespace", "user"})

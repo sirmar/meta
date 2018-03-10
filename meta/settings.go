@@ -9,7 +9,7 @@ type SettingsYml struct {
 	Email           string `yaml:"email" question:"Your email"`
 	DockerRegistry  string `yaml:"docker-registry" question:"Url to docker registry"`
 	DockerNamespace string `yaml:"docker-namespace" question:"Namespace used in docker registry"`
-	DockerUser string `yaml:"docker-user" question:"User name used when logging in to docker registry"`
+	DockerUser      string `yaml:"docker-user" question:"User name used when logging in to docker registry"`
 }
 
 type VerifyYml struct {
