@@ -20,10 +20,11 @@ type Develop struct {
 	runner   IRunner
 	dotMeta  IDotMeta
 	settings ISettings
+	template ITemplate
 }
 
-func NewDevelop(util IUtil, runner IRunner, dotMeta IDotMeta, settings ISettings) IDevelop {
-	return &Develop{util, runner, dotMeta, settings}
+func NewDevelop(util IUtil, runner IRunner, dotMeta IDotMeta, settings ISettings, template ITemplate) IDevelop {
+	return &Develop{util, runner, dotMeta, settings, template}
 }
 
 func (self *Develop) Install() {
@@ -38,7 +39,8 @@ func (self *Develop) Enter() {
 
 func (self *Develop) Stage(stage string, imageOnly bool) {
 	metaYml := self.dotMeta.ReadMetaYml()
-	for _, cmd := range self.settings.ReadLanguageYml(metaYml.Language).Stage(stage) {
+	for _, cmdTemplate := range self.settings.ReadLanguageYml(metaYml.Language).Stage(stage) {
+		cmd := self.template.ExecuteOnString(cmdTemplate, self.settings.Translation(metaYml))
 		parts := strings.Split(cmd, " ")
 		args := append(self.baseArgs(metaYml, imageOnly), parts...)
 		self.runner.Run("docker", args)

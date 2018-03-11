@@ -2,6 +2,7 @@ package meta_test
 
 import (
 	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/mock"
 	"meta/meta"
 	"meta/meta/mocks"
 	"testing"
@@ -13,6 +14,7 @@ type DevelopTest struct {
 	runner   *mocks.IRunner
 	dotMeta  *mocks.IDotMeta
 	settings *mocks.ISettings
+	template *mocks.ITemplate
 	develop  meta.IDevelop
 }
 
@@ -21,7 +23,8 @@ func (suite *DevelopTest) SetupTest() {
 	suite.runner = new(mocks.IRunner)
 	suite.dotMeta = new(mocks.IDotMeta)
 	suite.settings = new(mocks.ISettings)
-	suite.develop = meta.NewDevelop(suite.util, suite.runner, suite.dotMeta, suite.settings)
+	suite.template = new(mocks.ITemplate)
+	suite.develop = meta.NewDevelop(suite.util, suite.runner, suite.dotMeta, suite.settings, suite.template)
 }
 
 func (suite *DevelopTest) TestInstall() {
@@ -39,9 +42,13 @@ func (suite *DevelopTest) TestEnter() {
 }
 
 func (suite *DevelopTest) TestStage() {
-	suite.dotMeta.On("ReadMetaYml").Return(&meta.MetaYml{"name", "golang"})
-	languageYml := map[string][]string{"build": []string{"cmd1", "cmd2"}}
+	metaYml := &meta.MetaYml{"name", "golang"}
+	suite.dotMeta.On("ReadMetaYml").Return(metaYml)
+	languageYml := map[string][]string{"build": []string{"cmd1", "cmd2 {{.Name}}"}}
 	suite.settings.On("ReadLanguageYml", "golang").Return(&meta.LanguageYml{languageYml})
+	suite.template.On("ExecuteOnString", "cmd1", mock.Anything).Return("cmd1")
+	suite.template.On("ExecuteOnString", "cmd2 {{.Name}}", mock.Anything).Return("cmd2")
+	suite.settings.On("Translation", metaYml).Return(&meta.Translation{*SettingsYmlMock(), *metaYml})
 
 	suite.runner.On("Run", "docker", contains("run name cmd1")).Return()
 	suite.runner.On("Run", "docker", contains("run name cmd2")).Return()

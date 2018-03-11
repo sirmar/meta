@@ -1,13 +1,13 @@
 stages:
   test:
-    - nosestests test
+    - nosetests test
 
   lint:
-    - flake8 setup.py test {{:Name}}
+    - flake8 setup.py test {{.Name}}
 
   coverage:
-    - nosestests --with-coverage test
+    - nosetests --with-coverage test
 
   ci:
-    - flake8 setup.py test {{:Name}}
-    - nosestests --with-coverage test
+    - flake8 setup.py test {{.Name}}
+    - nosetests --with-coverage test
