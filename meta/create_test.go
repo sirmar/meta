@@ -26,24 +26,23 @@ func (suite *CreateTest) SetupTest() {
 }
 
 func (suite *CreateTest) TestDirectory() {
-	suite.givenTranslation(&meta.MetaYml{"newpkg", "golang"})
+	suite.givenTranslation()
 	suite.givenDirectory()
-	suite.create.Template("golang", "newpkg")
+	suite.create.Template("language", "name")
 	suite.util.AssertExpectations(suite.T())
 	suite.template.AssertExpectations(suite.T()) // No calls
 }
 
 func (suite *CreateTest) TestFilePathAndContentWillBeTemplateExpanded() {
-	suite.givenTranslation(&meta.MetaYml{"newpkg", "golang"})
+	suite.givenTranslation()
 	suite.givenFile("file_{{.Name}}")
-	suite.create.Template("golang", "newpkg")
+	suite.create.Template("language", "name")
 	suite.util.AssertExpectations(suite.T())
 	suite.template.AssertExpectations(suite.T())
 }
 
-func (suite *CreateTest) givenTranslation(metaYml *meta.MetaYml) {
-	suite.settings.On("Translation", metaYml).Return(
-		&meta.Translation{meta.SettingsYml{"John", "john@email.com", "url", "namespace", "user"}, *metaYml})
+func (suite *CreateTest) givenTranslation() {
+	suite.settings.On("Translation", MetaYmlMock()).Return(&meta.Translation{*SettingsYmlMock(), *MetaYmlMock()})
 }
 
 func (suite *CreateTest) givenDirectory() {
@@ -62,8 +61,8 @@ func (suite *CreateTest) givenFileOrDirWithContent(fileOrDir string, isFile bool
 		walkPath := path.Join(walkRoot, fileOrDir)
 		suite.util.On("IsFile", walkPath).Return(isFile)
 		if isFile {
-			suite.template.On("ExecuteOnString", "newpkg/file_{{.Name}}", mock.Anything).Return("newpkg/file_newpkg")
-			suite.template.On("ExecuteOnFile", mock.Anything, "newpkg/file_newpkg", mock.Anything)
+			suite.template.On("ExecuteOnString", "name/file_{{.Name}}", mock.Anything).Return("name/file_name")
+			suite.template.On("ExecuteOnFile", mock.Anything, "name/file_name", mock.Anything)
 		}
 		walkFn(walkPath, nil, nil)
 	})

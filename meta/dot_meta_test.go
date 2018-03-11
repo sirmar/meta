@@ -14,13 +14,17 @@ type DotMetaTest struct {
 	dotMeta meta.IDotMeta
 }
 
+func MetaYmlMock() *meta.MetaYml {
+	return &meta.MetaYml{"name", "language"}
+}
+
 func (suite *DotMetaTest) SetupTest() {
 	suite.util = new(mocks.IUtil)
 	suite.dotMeta = meta.NewDotMeta(suite.util)
 }
 
 func (suite *DotMetaTest) TestReadMetaYml() {
-	suite.util.On("ReadYml", ".meta/meta.yml", mock.Anything).Return(&meta.MetaYml{"name", "language"})
+	suite.util.On("ReadYml", ".meta/meta.yml", mock.Anything).Return(MetaYmlMock())
 	metaYml := suite.dotMeta.ReadMetaYml()
 	suite.Equal("name", metaYml.Name)
 	suite.Equal("language", metaYml.Language)

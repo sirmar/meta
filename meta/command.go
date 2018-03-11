@@ -7,6 +7,7 @@ type ICommand interface {
 	Enter()
 	Stage(stage string, imageOnly bool)
 	Upload()
+	Login()
 	CI()
 	Run(args []string, imageOnly bool)
 	Create(language, name string)
@@ -59,4 +60,8 @@ func (self *Command) Verify() {
 
 func (self *Command) Setup() {
 	self.setup.Run()
+}
+
+func (self *Command) Login() {
+	self.develop.Login()
 }

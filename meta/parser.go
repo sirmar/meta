@@ -33,6 +33,7 @@ type CommandLine struct {
 	} `command:"create"`
 	Verify struct{} `command:"verify" description:"Verify then project is suitable for this tool"`
 	Upload struct{} `command:"upload" description:"Upload docker image/package to server"`
+	Login  struct{} `command:"login" description:"Login to docker registry"`
 }
 
 type Parser struct {
@@ -60,7 +61,6 @@ func (self *Parser) Run() {
 
 	if err != nil {
 		self.log.Fatal(err)
-		return
 	}
 
 	if self.dotMetaIsRequired(cmd) {
@@ -103,12 +103,16 @@ func (self *Parser) otherCommands(cmd *gocmd.Cmd, flags *CommandLine) {
 			self.command.Create("golang", flags.Create.Golang.Name)
 		} else if cmd.FlagArgs("Create.General") != nil {
 			self.command.Create("general", flags.Create.General.Name)
+		} else {
+			self.log.Fatal("need language and name")
 		}
 	} else if cmd.FlagArgs("Setup") != nil {
 		self.command.Setup()
+	} else if cmd.FlagArgs("Login") != nil {
+		self.command.Login()
 	}
 }
 
 func (self *Parser) dotMetaIsRequired(cmd *gocmd.Cmd) bool {
-	return cmd.FlagArgs("Create") == nil && cmd.FlagArgs("Setup") == nil
+	return cmd.FlagArgs("Create") == nil && cmd.FlagArgs("Setup") == nil && cmd.FlagArgs("Login") == nil
 }

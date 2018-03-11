@@ -14,14 +14,17 @@ type SettingsTest struct {
 	settings meta.ISettings
 }
 
+func SettingsYmlMock() *meta.SettingsYml {
+	return &meta.SettingsYml{"author", "email", "url", "namespace", "user"}
+}
+
 func (suite *SettingsTest) SetupTest() {
 	suite.util = new(mocks.IUtil)
 	suite.settings = meta.NewSettings(suite.util)
 }
 
 func (suite *SettingsTest) TestReadSettingsYml() {
-	suite.util.On("ReadYml", "~/.meta/settings.yml", mock.Anything).Return(
-		&meta.SettingsYml{"author", "email", "url", "namespace", "user"})
+	suite.util.On("ReadYml", "~/.meta/settings.yml", mock.Anything).Return(SettingsYmlMock())
 	createYml := suite.settings.ReadSettingsYml()
 	suite.Equal("author", createYml.Author)
 	suite.Equal("email", createYml.Email)
@@ -32,7 +35,7 @@ func (suite *SettingsTest) TestReadSettingsYml() {
 
 func (suite *SettingsTest) TestWriteSettingsYml() {
 	suite.util.On("WriteYml", "~/.meta/settings.yml", mock.Anything).Return()
-	suite.settings.WriteSettingsYml(&meta.SettingsYml{"author", "email", "url", "namespace", "user"})
+	suite.settings.WriteSettingsYml(SettingsYmlMock())
 	suite.util.AssertExpectations(suite.T())
 }
 
@@ -51,9 +54,8 @@ func (suite *SettingsTest) TestReadLanguageYml() {
 }
 
 func (suite *SettingsTest) TestTranslation() {
-	suite.util.On("ReadYml", "~/.meta/settings.yml", mock.Anything).Return(
-		&meta.SettingsYml{"author", "email", "url", "namespace", "user"})
-	translation := suite.settings.Translation(&meta.MetaYml{"name", "language"}).(*meta.Translation)
+	suite.util.On("ReadYml", "~/.meta/settings.yml", mock.Anything).Return(SettingsYmlMock())
+	translation := suite.settings.Translation(MetaYmlMock()).(*meta.Translation)
 	suite.Equal("author", translation.Author)
 	suite.Equal("email", translation.Email)
 	suite.Equal("url", translation.DockerRegistry)

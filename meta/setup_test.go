@@ -22,7 +22,7 @@ func (suite *SetupTest) SetupTest() {
 }
 
 func (suite *SetupTest) TestSetValuesWritten() {
-	suite.settings.On("ReadSettingsYml").Return(&meta.SettingsYml{"author", "email", "url", "namespace", "user"})
+	suite.settings.On("ReadSettingsYml").Return(SettingsYmlMock())
 	suite.util.On("Input", mock.Anything).Return("input written")
 	suite.settings.On("WriteSettingsYml", &meta.SettingsYml{
 		"input written", "input written", "input written", "input written", "input written"})
@@ -31,9 +31,9 @@ func (suite *SetupTest) TestSetValuesWritten() {
 }
 
 func (suite *SetupTest) TestKeepPreviousValueWhenWritingNothing() {
-	suite.settings.On("ReadSettingsYml").Return(&meta.SettingsYml{"author", "email", "url", "namespace", "user"})
+	suite.settings.On("ReadSettingsYml").Return(SettingsYmlMock())
 	suite.util.On("Input", mock.Anything).Return("")
-	suite.settings.On("WriteSettingsYml", &meta.SettingsYml{"author", "email", "url", "namespace", "user"})
+	suite.settings.On("WriteSettingsYml", SettingsYmlMock())
 	suite.setup.Run()
 	suite.settings.AssertExpectations(suite.T())
 }

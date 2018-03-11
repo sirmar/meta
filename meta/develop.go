@@ -12,6 +12,7 @@ type IDevelop interface {
 	Stage(stage string, imageOnly bool)
 	Upload()
 	Run(args []string, imageOnly bool)
+	Login()
 }
 
 type Develop struct {
@@ -67,4 +68,9 @@ func (self *Develop) volume(metaYml *MetaYml) string {
 		return fmt.Sprintf("%s:/go/src/%s", root, metaYml.Name)
 	}
 	return fmt.Sprintf("%s:/usr/src/%s", root, metaYml.Name)
+}
+
+func (self *Develop) Login() {
+	settingsYml := self.settings.ReadSettingsYml()
+	self.runner.Run("docker", []string{"login", "-u", settingsYml.DockerUser, settingsYml.DockerRegistry})
 }

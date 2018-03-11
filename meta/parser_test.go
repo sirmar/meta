@@ -112,11 +112,17 @@ func (suite *ParserTest) TestSetup() {
 	suite.command.AssertExpectations(suite.T())
 }
 
-func (suite *ParserTest) TestUnvalidCommand() {
+func (suite *ParserTest) TestLogin() {
+	suite.command.On("Login").Return()
+	suite.shell("meta login")
+	suite.command.AssertExpectations(suite.T())
+}
+
+func (suite *ParserTest) TestUnvalidCreate() {
 	suite.log.On("Fatal", mock.Anything).Run(func(args mock.Arguments) {
-		suite.Equal(args.Error(0).Error(), "unknown argument: unvalid")
+		suite.Equal(args.String(0), "need language and name")
 	})
-	suite.shell("meta unvalid")
+	suite.shell("meta create")
 }
 
 func (suite *ParserTest) shell(cmd string) {

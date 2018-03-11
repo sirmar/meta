@@ -18,6 +18,11 @@ func (_m *IDevelop) Install() {
 	_m.Called()
 }
 
+// Login provides a mock function with given fields:
+func (_m *IDevelop) Login() {
+	_m.Called()
+}
+
 // Run provides a mock function with given fields: args, imageOnly
 func (_m *IDevelop) Run(args []string, imageOnly bool) {
 	_m.Called(args, imageOnly)
