@@ -14,6 +14,6 @@ func main() {
 	verify := meta.NewVerify(util, settings, log)
 	release := meta.NewRelease(util, runner, log)
 	develop := meta.NewDevelop(util, runner, dotMeta, settings, template)
-	command := meta.NewCommand(develop, create, verify, setup, release)
-	meta.NewParser(dotMeta, command, log).Run()
+
+	meta.NewParser(dotMeta, log, develop, create, verify, setup, release).Run()
 }

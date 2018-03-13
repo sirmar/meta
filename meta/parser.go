@@ -55,12 +55,16 @@ type CommandLine struct {
 
 type Parser struct {
 	dotMeta IDotMeta
-	command ICommand
 	log     ILog
+	develop IDevelop
+	create  ICreate
+	verify  IVerify
+	setup   ISetup
+	release IRelease
 }
 
-func NewParser(dotMeta IDotMeta, command ICommand, log ILog) *Parser {
-	return &Parser{dotMeta, command, log}
+func NewParser(dotMeta IDotMeta, log ILog, develop IDevelop, create ICreate, verify IVerify, setup ISetup, release IRelease) *Parser {
+	return &Parser{dotMeta, log, develop, create, verify, setup, release}
 }
 
 func (self *Parser) Run() {
@@ -90,57 +94,58 @@ func (self *Parser) Run() {
 
 func (self *Parser) metaCommands(cmd *gocmd.Cmd, flags *CommandLine) {
 	if cmd.FlagArgs("Install") != nil {
-		self.command.Install()
+		self.develop.Install()
 	} else if cmd.FlagArgs("Enter") != nil {
-		self.command.Enter()
+		self.develop.Enter()
 	} else if cmd.FlagArgs("Build") != nil {
-		self.command.Stage("build", flags.ImageOnly)
+		self.develop.Stage("build", flags.ImageOnly)
 	} else if cmd.FlagArgs("Test") != nil {
-		self.command.Stage("test", flags.ImageOnly)
+		self.develop.Stage("test", flags.ImageOnly)
 	} else if cmd.FlagArgs("Coverage") != nil {
-		self.command.Stage("coverage", flags.ImageOnly)
+		self.develop.Stage("coverage", flags.ImageOnly)
 	} else if cmd.FlagArgs("Lint") != nil {
-		self.command.Stage("lint", flags.ImageOnly)
+		self.develop.Stage("lint", flags.ImageOnly)
 	} else if cmd.FlagArgs("CI") != nil {
-		self.command.CI()
+		self.develop.Install()
+		self.develop.Stage("ci", true)
 	} else if cmd.FlagArgs("Run") != nil {
-		self.command.Run(strings.Split(flags.Run.Command, " "), flags.ImageOnly)
+		self.develop.Run(strings.Split(flags.Run.Command, " "), flags.ImageOnly)
 	} else if cmd.FlagArgs("Verify") != nil {
-		self.command.Verify()
+		self.verify.Files()
 	} else if cmd.FlagArgs("Upload") != nil {
-		self.command.Upload()
+		self.develop.Upload()
 	}
 }
 
 func (self *Parser) otherCommands(cmd *gocmd.Cmd, flags *CommandLine) {
 	if cmd.FlagArgs("Create") != nil {
 		if cmd.FlagArgs("Create.Python") != nil {
-			self.command.Create("python", flags.Create.Python.Name)
+			self.create.Template("python", flags.Create.Python.Name)
 		} else if cmd.FlagArgs("Create.Golang") != nil {
-			self.command.Create("golang", flags.Create.Golang.Name)
+			self.create.Template("golang", flags.Create.Golang.Name)
 		} else if cmd.FlagArgs("Create.General") != nil {
-			self.command.Create("general", flags.Create.General.Name)
+			self.create.Template("general", flags.Create.General.Name)
 		} else {
 			self.log.Fatal("need language and name")
 		}
 	} else if cmd.FlagArgs("Setup") != nil {
-		self.command.Setup()
+		self.setup.Run()
 	} else if cmd.FlagArgs("Login") != nil {
-		self.command.Login()
+		self.develop.Login()
 	} else if cmd.FlagArgs("Release") != nil {
 		if cmd.FlagArgs("Release.Patch") != nil {
-			self.command.Release("patch", flags.Release.Patch.Message)
+			self.release.Create("patch", flags.Release.Patch.Message)
 		} else if cmd.FlagArgs("Release.Minor") != nil {
-			self.command.Release("minor", flags.Release.Minor.Message)
+			self.release.Create("minor", flags.Release.Minor.Message)
 		} else if cmd.FlagArgs("Release.Major") != nil {
-			self.command.Release("major", flags.Release.Major.Message)
+			self.release.Create("major", flags.Release.Major.Message)
 		} else {
 			self.log.Fatal("need patch, minor or major")
 		}
 	} else if cmd.FlagArgs("Releases") != nil {
-		self.command.Releases()
+		self.release.List()
 	} else if cmd.FlagArgs("Diff") != nil {
-		self.command.Diff()
+		self.release.Unreleased()
 	}
 }
 
