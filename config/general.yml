@@ -1,3 +1,5 @@
 stages:
   test:
     - ./test.sh
+  ci:
+    - ./test.sh
