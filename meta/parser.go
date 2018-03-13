@@ -10,13 +10,17 @@ type CommandLine struct {
 	ImageOnly bool     `short:"i" long:"image-only" description:"Run based on docker image without using any volumes to see local changes" global:"true"`
 	Version   bool     `short:"v" long:"version" description:"Display version"`
 	Setup     struct{} `command:"setup" description:"Setup up your meta configuration"`
-	Install   struct{} `command:"install" description:"Build the docker image that will install all dependencies"`
-	Build     struct{} `command:"build" description:"Build the current project"`
-	Test      struct{} `command:"test" description:"Run tests on the current project"`
-	Coverage  struct{} `command:"coverage" description:"Run coverage on the current project"`
-	Lint      struct{} `command:"lint" description:"Run lint tools on the current project"`
-	CI        struct{} `command:"ci" description:"Install, build, test, coverage and lint in one command"`
-	Enter     struct{} `command:"enter" description:"Enter docker image"`
+	Install   struct {
+		NoCache bool `short:"n" long:"no-cache" description:"Build without cache"`
+	} `command:"install" description:"Build the docker image that will install all dependencies"`
+	Build    struct{} `command:"build" description:"Build the current project"`
+	Test     struct{} `command:"test" description:"Run tests on the current project"`
+	Coverage struct{} `command:"coverage" description:"Run coverage on the current project"`
+	Lint     struct{} `command:"lint" description:"Run lint tools on the current project"`
+	CI       struct {
+		NoCache bool `short:"n" long:"no-cache" description:"Build without cache"`
+	} `command:"ci" description:"Install, build, test, coverage and lint in one command"`
+	Enter struct{} `command:"enter" description:"Enter docker image"`
 
 	Run struct {
 		Command string `short:"c" long:"command" required:"true" description:"Command"`
@@ -94,7 +98,7 @@ func (self *Parser) Run() {
 
 func (self *Parser) metaCommands(cmd *gocmd.Cmd, flags *CommandLine) {
 	if cmd.FlagArgs("Install") != nil {
-		self.develop.Install()
+		self.develop.Install(flags.Install.NoCache)
 	} else if cmd.FlagArgs("Enter") != nil {
 		self.develop.Enter()
 	} else if cmd.FlagArgs("Build") != nil {
@@ -106,7 +110,7 @@ func (self *Parser) metaCommands(cmd *gocmd.Cmd, flags *CommandLine) {
 	} else if cmd.FlagArgs("Lint") != nil {
 		self.develop.Stage("lint", flags.ImageOnly)
 	} else if cmd.FlagArgs("CI") != nil {
-		self.develop.Install()
+		self.develop.Install(flags.CI.NoCache)
 		self.develop.Stage("ci", true)
 	} else if cmd.FlagArgs("Run") != nil {
 		self.develop.Run(strings.Split(flags.Run.Command, " "), flags.ImageOnly)

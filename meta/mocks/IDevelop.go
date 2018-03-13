@@ -13,9 +13,9 @@ func (_m *IDevelop) Enter() {
 	_m.Called()
 }
 
-// Install provides a mock function with given fields:
-func (_m *IDevelop) Install() {
-	_m.Called()
+// Install provides a mock function with given fields: noCache
+func (_m *IDevelop) Install(noCache bool) {
+	_m.Called(noCache)
 }
 
 // Login provides a mock function with given fields:

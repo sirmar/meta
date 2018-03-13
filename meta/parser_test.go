@@ -35,8 +35,13 @@ func (suite *ParserTest) SetupTest() {
 }
 
 func (suite *ParserTest) TestInstall() {
-	suite.develop.On("Install")
+	suite.develop.On("Install", false)
 	suite.shell("meta install")
+}
+
+func (suite *ParserTest) TestInstallNoCache() {
+	suite.develop.On("Install", true)
+	suite.shell("meta install --no-cache")
 }
 
 func (suite *ParserTest) TestBuild() {
@@ -73,9 +78,16 @@ func (suite *ParserTest) TestEnter() {
 }
 
 func (suite *ParserTest) TestCI() {
-	suite.develop.On("Install")
+	suite.develop.On("Install", false)
 	suite.develop.On("Stage", "ci", true)
 	suite.shell("meta ci")
+	suite.develop.AssertExpectations(suite.T())
+}
+
+func (suite *ParserTest) TestCINoCache() {
+	suite.develop.On("Install", true)
+	suite.develop.On("Stage", "ci", true)
+	suite.shell("meta ci -n")
 	suite.develop.AssertExpectations(suite.T())
 }
 

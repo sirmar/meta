@@ -7,6 +7,11 @@ _meta()
     commands="install build test coverage lint ci enter run create verify upload setup release releases diff"
 
     case "${prev}" in
+        ci|install)
+            local opts="-n --no-cache"
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
         run)
             local opts="-c --command"
             COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )

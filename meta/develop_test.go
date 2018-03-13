@@ -30,7 +30,14 @@ func (suite *DevelopTest) SetupTest() {
 func (suite *DevelopTest) TestInstall() {
 	suite.dotMeta.On("ReadMetaYml").Return(MetaYmlMock())
 	suite.runner.On("Run", "docker", contains("build . --tag name")).Return()
-	suite.develop.Install()
+	suite.develop.Install(false)
+	suite.runner.AssertExpectations(suite.T())
+}
+
+func (suite *DevelopTest) TestInstallNoCache() {
+	suite.dotMeta.On("ReadMetaYml").Return(MetaYmlMock())
+	suite.runner.On("Run", "docker", contains("build . --no-cache --tag name")).Return()
+	suite.develop.Install(true)
 	suite.runner.AssertExpectations(suite.T())
 }
 
@@ -58,7 +65,9 @@ func (suite *DevelopTest) TestStage() {
 
 func (suite *DevelopTest) TestUpload() {
 	suite.dotMeta.On("ReadMetaYml").Return(MetaYmlMock())
-	suite.runner.On("Run", "docker", contains("push name")).Return()
+	suite.settings.On("ReadSettingsYml").Return(SettingsYmlMock())
+	suite.runner.On("Run", "docker", contains("tag name url/namespace/name"))
+	suite.runner.On("Run", "docker", contains("push url/namespace/name"))
 	suite.develop.Upload()
 	suite.runner.AssertExpectations(suite.T())
 }

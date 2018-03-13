@@ -7,7 +7,7 @@ import (
 
 //go:generate mockery -name=IDevelop
 type IDevelop interface {
-	Install()
+	Install(noCache bool)
 	Enter()
 	Stage(stage string, imageOnly bool)
 	Upload()
@@ -27,9 +27,13 @@ func NewDevelop(util IUtil, runner IRunner, dotMeta IDotMeta, settings ISettings
 	return &Develop{util, runner, dotMeta, settings, template}
 }
 
-func (self *Develop) Install() {
+func (self *Develop) Install(noCache bool) {
 	metaYml := self.dotMeta.ReadMetaYml()
-	self.runner.Run("docker", []string{"build", ".", "--tag", metaYml.Name})
+	if noCache {
+		self.runner.Run("docker", []string{"build", ".", "--no-cache", "--tag", metaYml.Name})
+	} else {
+		self.runner.Run("docker", []string{"build", ".", "--tag", metaYml.Name})
+	}
 }
 
 func (self *Develop) Enter() {
