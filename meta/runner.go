@@ -26,11 +26,16 @@ func (self *Runner) Run(command string, args []string) {
 	cmd.Stdout = os.Stdout
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	cmd.Run()
+	if err := cmd.Run(); err != nil {
+		self.log.Fatal(err)
+	}
 }
 
 func (self *Runner) Output(command string, args []string) string {
 	self.log.Println("Running:", command, strings.Join(args, " "))
-	output, _ := exec.Command(command, args...).Output()
+	output, err := exec.Command(command, args...).Output()
+	if err != nil {
+		self.log.Fatal(err)
+	}
 	return strings.TrimSpace(string(output))
 }
