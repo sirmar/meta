@@ -3,3 +3,43 @@
 #+EMAIL: sirmar@gmail
 
 Single interface for your programming cycle across all languages. No need to install languages and tools on your machine.
+
+* Features
+TODO
+
+* Install Meta
+** Dependencies
+Meta is made with as few dependencies as possible. You will need Docker and Git on your machine i order for
+Meta to work and wget in order to download it.
+
+** Linux
+Remember to scan through the shell script, so that you feel safe running it remotely.
+
+#+BEGIN_SRC sh
+wget -qO - https://github.com/sirmar/meta/raw/master/script/remote_linux_install.sh | sh
+#+END_SRC
+
+** Mac
+Remember to scan through the shell script, so that you feel safe running it remotely.
+
+#+BEGIN_SRC sh
+wget -qO - https://github.com/sirmar/meta/raw/master/script/remote_mac_install.sh | sh
+#+END_SRC
+
+* Configure Meta
+TODO
+
+* Bash Completion
+The install script will put a bash completion script in the main configuration directory. Source it to enable completion. Consider to source it in your start up script.
+
+#+BEGIN_SRC sh
+source ~/.meta/bash_completion
+#+END_SRC
+
+* Remove Meta
+To remove Meta completely from your system.
+
+#+BEGIN_SRC sh
+rm /usr/local/bin/meta
+rm -r ~/.meta
+#+END_SRC
