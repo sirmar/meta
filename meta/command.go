@@ -12,6 +12,9 @@ type ICommand interface {
 	Run(args []string, imageOnly bool)
 	Create(language, name string)
 	Verify()
+	Release(level, message string)
+	Releases()
+	Diff()
 }
 
 type Command struct {
@@ -19,10 +22,11 @@ type Command struct {
 	create  ICreate
 	verify  IVerify
 	setup   ISetup
+	release IRelease
 }
 
-func NewCommand(develop IDevelop, create ICreate, verify IVerify, setup ISetup) ICommand {
-	return &Command{develop, create, verify, setup}
+func NewCommand(develop IDevelop, create ICreate, verify IVerify, setup ISetup, release IRelease) ICommand {
+	return &Command{develop, create, verify, setup, release}
 }
 
 func (self *Command) Install() {
@@ -64,4 +68,16 @@ func (self *Command) Setup() {
 
 func (self *Command) Login() {
 	self.develop.Login()
+}
+
+func (self *Command) Release(level, message string) {
+	self.release.Create(level, message)
+}
+
+func (self *Command) Releases() {
+	self.release.List()
+}
+
+func (self *Command) Diff() {
+	self.release.Unreleased()
 }

@@ -9,6 +9,7 @@ import (
 //go:generate mockery -name=IRunner
 type IRunner interface {
 	Run(cmd string, args []string)
+	Output(cmd string, args []string) string
 }
 
 type Runner struct {
@@ -26,4 +27,10 @@ func (self *Runner) Run(command string, args []string) {
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	cmd.Run()
+}
+
+func (self *Runner) Output(command string, args []string) string {
+	self.log.Println("Running:", command, strings.Join(args, " "))
+	output, _ := exec.Command(command, args...).Output()
+	return strings.TrimSpace(string(output))
 }

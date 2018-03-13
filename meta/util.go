@@ -29,6 +29,7 @@ type IUtil interface {
 	CreateFile(path string) *os.File
 	Expand(path string) string
 	Input(text string) string
+	YesNo(text string) bool
 }
 
 type Util struct {
@@ -153,4 +154,16 @@ func (self *Util) Input(text string) string {
 	fmt.Print(text)
 	input, _ := reader.ReadString('\n')
 	return strings.TrimSpace(input)
+}
+
+func (self *Util) YesNo(text string) bool {
+	input := strings.ToLower(self.Input(text))
+
+	if input == "y" || input == "yes" {
+		return true
+	} else if input == "n" || input == "no" {
+		return false
+	} else {
+		return self.YesNo(text)
+	}
 }

@@ -8,6 +8,20 @@ type IRunner struct {
 	mock.Mock
 }
 
+// Output provides a mock function with given fields: cmd, args
+func (_m *IRunner) Output(cmd string, args []string) string {
+	ret := _m.Called(cmd, args)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(string, []string) string); ok {
+		r0 = rf(cmd, args)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
 // Run provides a mock function with given fields: cmd, args
 func (_m *IRunner) Run(cmd string, args []string) {
 	_m.Called(cmd, args)

@@ -14,6 +14,7 @@ type CommandTest struct {
 	create  *mocks.ICreate
 	verify  *mocks.IVerify
 	setup   *mocks.ISetup
+	release *mocks.IRelease
 }
 
 func (suite *CommandTest) SetupTest() {
@@ -21,7 +22,8 @@ func (suite *CommandTest) SetupTest() {
 	suite.create = new(mocks.ICreate)
 	suite.verify = new(mocks.IVerify)
 	suite.setup = new(mocks.ISetup)
-	suite.command = meta.NewCommand(suite.develop, suite.create, suite.verify, suite.setup)
+	suite.release = new(mocks.IRelease)
+	suite.command = meta.NewCommand(suite.develop, suite.create, suite.verify, suite.setup, suite.release)
 }
 
 func (suite *CommandTest) TestSetup() {
@@ -71,6 +73,24 @@ func (suite *CommandTest) TestVerify() {
 	suite.verify.On("Files").Return()
 	suite.command.Verify()
 	suite.verify.AssertExpectations(suite.T())
+}
+
+func (suite *CommandTest) TestRelease() {
+	suite.release.On("Create", "minor", "message").Return()
+	suite.command.Release("minor", "message")
+	suite.release.AssertExpectations(suite.T())
+}
+
+func (suite *CommandTest) TestReleases() {
+	suite.release.On("List").Return()
+	suite.command.Releases()
+	suite.release.AssertExpectations(suite.T())
+}
+
+func (suite *CommandTest) TestDiff() {
+	suite.release.On("Unreleased").Return()
+	suite.command.Diff()
+	suite.release.AssertExpectations(suite.T())
 }
 
 func TestCommandSuite(t *testing.T) {

@@ -17,9 +17,11 @@ type CommandLine struct {
 	Lint      struct{} `command:"lint" description:"Run lint tools on the current project"`
 	CI        struct{} `command:"ci" description:"Install, build, test, coverage and lint in one command"`
 	Enter     struct{} `command:"enter" description:"Enter docker image"`
-	Run       struct {
+
+	Run struct {
 		Command string `short:"c" long:"command" required:"true" description:"Command"`
 	} `command:"run" description:"run description"`
+
 	Create struct {
 		Python struct {
 			Name string `short:"n" long:"name" required:"true" description:"Name of new project"`
@@ -31,9 +33,24 @@ type CommandLine struct {
 			Name string `short:"n" long:"name" required:"true" description:"Name of new project"`
 		} `command:"general" description:"Create a minimal template project"`
 	} `command:"create"`
+
 	Verify struct{} `command:"verify" description:"Verify then project is suitable for this tool"`
 	Upload struct{} `command:"upload" description:"Upload docker image/package to server"`
 	Login  struct{} `command:"login" description:"Login to docker registry"`
+
+	Release struct {
+		Patch struct {
+			Message string `short:"m" long:"message" required:"true" description:"Release message"`
+		} `command:"patch" description:"Create patch release"`
+		Minor struct {
+			Message string `short:"m" long:"message" required:"true" description:"Release message"`
+		} `command:"minor" description:"Create minor release"`
+		Major struct {
+			Message string `short:"m" long:"message" required:"true" description:"Release message"`
+		} `command:"major" description:"Create major release"`
+	} `command:"release"`
+	Releases struct{} `command:"releases" description:"List all releases"`
+	Diff     struct{} `command:"diff" description:"Show diff since last release"`
 }
 
 type Parser struct {
@@ -110,9 +127,28 @@ func (self *Parser) otherCommands(cmd *gocmd.Cmd, flags *CommandLine) {
 		self.command.Setup()
 	} else if cmd.FlagArgs("Login") != nil {
 		self.command.Login()
+	} else if cmd.FlagArgs("Release") != nil {
+		if cmd.FlagArgs("Release.Patch") != nil {
+			self.command.Release("patch", flags.Release.Patch.Message)
+		} else if cmd.FlagArgs("Release.Minor") != nil {
+			self.command.Release("minor", flags.Release.Minor.Message)
+		} else if cmd.FlagArgs("Release.Major") != nil {
+			self.command.Release("major", flags.Release.Major.Message)
+		} else {
+			self.log.Fatal("need patch, minor or major")
+		}
+	} else if cmd.FlagArgs("Releases") != nil {
+		self.command.Releases()
+	} else if cmd.FlagArgs("Diff") != nil {
+		self.command.Diff()
 	}
 }
 
 func (self *Parser) dotMetaIsRequired(cmd *gocmd.Cmd) bool {
-	return cmd.FlagArgs("Create") == nil && cmd.FlagArgs("Setup") == nil && cmd.FlagArgs("Login") == nil
+	return cmd.FlagArgs("Create") == nil &&
+		cmd.FlagArgs("Setup") == nil &&
+		cmd.FlagArgs("Login") == nil &&
+		cmd.FlagArgs("Release") == nil &&
+		cmd.FlagArgs("Releases") == nil &&
+		cmd.FlagArgs("Diff") == nil
 }

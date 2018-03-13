@@ -188,3 +188,17 @@ func (_m *IUtil) WriteFile(path string, content []byte) {
 func (_m *IUtil) WriteYml(path string, dataStruct interface{}) {
 	_m.Called(path, dataStruct)
 }
+
+// YesNo provides a mock function with given fields: text
+func (_m *IUtil) YesNo(text string) bool {
+	ret := _m.Called(text)
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(string) bool); ok {
+		r0 = rf(text)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}

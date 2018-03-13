@@ -125,6 +125,24 @@ func (suite *ParserTest) TestUnvalidCreate() {
 	suite.shell("meta create")
 }
 
+func (suite *ParserTest) TestRelease() {
+	suite.command.On("Release", "minor", "message").Return()
+	suite.shell("meta release minor -m message")
+	suite.command.AssertExpectations(suite.T())
+}
+
+func (suite *ParserTest) TestReleases() {
+	suite.command.On("Releases").Return()
+	suite.shell("meta releases")
+	suite.command.AssertExpectations(suite.T())
+}
+
+func (suite *ParserTest) TestDiff() {
+	suite.command.On("Diff").Return()
+	suite.shell("meta diff")
+	suite.command.AssertExpectations(suite.T())
+}
+
 func (suite *ParserTest) shell(cmd string) {
 	oldArgs := os.Args
 	os.Args = strings.Split(cmd, " ")

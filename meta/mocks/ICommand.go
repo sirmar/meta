@@ -18,6 +18,11 @@ func (_m *ICommand) Create(language string, name string) {
 	_m.Called(language, name)
 }
 
+// Diff provides a mock function with given fields:
+func (_m *ICommand) Diff() {
+	_m.Called()
+}
+
 // Enter provides a mock function with given fields:
 func (_m *ICommand) Enter() {
 	_m.Called()
@@ -30,6 +35,16 @@ func (_m *ICommand) Install() {
 
 // Login provides a mock function with given fields:
 func (_m *ICommand) Login() {
+	_m.Called()
+}
+
+// Release provides a mock function with given fields: level, message
+func (_m *ICommand) Release(level string, message string) {
+	_m.Called(level, message)
+}
+
+// Releases provides a mock function with given fields:
+func (_m *ICommand) Releases() {
 	_m.Called()
 }
 

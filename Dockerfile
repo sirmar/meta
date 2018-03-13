@@ -14,7 +14,8 @@ RUN go get \
 RUN go get \
     github.com/devfacet/gocmd \
     gopkg.in/yaml.v2 \
-    github.com/mitchellh/go-homedir
+    github.com/mitchellh/go-homedir \
+    github.com/blang/semver
 
 # Copy source
 COPY . .

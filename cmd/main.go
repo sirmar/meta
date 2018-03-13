@@ -12,7 +12,8 @@ func main() {
 	setup := meta.NewSetup(util, settings)
 	create := meta.NewCreate(util, settings, template)
 	verify := meta.NewVerify(util, settings, log)
+	release := meta.NewRelease(util, runner, log)
 	develop := meta.NewDevelop(util, runner, dotMeta, settings, template)
-	command := meta.NewCommand(develop, create, verify, setup)
+	command := meta.NewCommand(develop, create, verify, setup, release)
 	meta.NewParser(dotMeta, command, log).Run()
 }

@@ -4,7 +4,7 @@ _meta()
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    commands="install build test coverage lint ci enter run create verify upload setup"
+    commands="install build test coverage lint ci enter run create verify upload setup release releases diff"
 
     case "${prev}" in
         run)
@@ -17,15 +17,25 @@ _meta()
             COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
             return 0
             ;;
+        release)
+            local opts="patch minor major"
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
         golang|python|general)
             local opts="-n --name"
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
+        patch|minor|major)
+            local opts="-m --message"
             COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
             return 0
             ;;
         !(meta))
             return 0
             ;;
-	 *)
+         *)
             ;;
     esac
 
