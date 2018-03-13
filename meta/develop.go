@@ -49,7 +49,10 @@ func (self *Develop) Stage(stage string, imageOnly bool) {
 
 func (self *Develop) Upload() {
 	metaYml := self.dotMeta.ReadMetaYml()
-	self.runner.Run("docker", []string{"push", metaYml.Name})
+	settingsYml := self.settings.ReadSettingsYml()
+	image := fmt.Sprintf("%s/%s/%s:latest", settingsYml.DockerRegistry, settingsYml.DockerNamespace, metaYml.Name)
+	self.runner.Run("docker", []string{"tag", metaYml.Name, image})
+	self.runner.Run("docker", []string{"push", image})
 }
 
 func (self *Develop) Run(args []string, imageOnly bool) {
