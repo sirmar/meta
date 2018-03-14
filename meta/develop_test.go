@@ -11,6 +11,7 @@ import (
 type DevelopTest struct {
 	suite.Suite
 	util     *mocks.IUtil
+	log      *mocks.ILog
 	runner   *mocks.IRunner
 	dotMeta  *mocks.IDotMeta
 	settings *mocks.ISettings
@@ -20,11 +21,12 @@ type DevelopTest struct {
 
 func (suite *DevelopTest) SetupTest() {
 	suite.util = new(mocks.IUtil)
+	suite.log = new(mocks.ILog)
 	suite.runner = new(mocks.IRunner)
 	suite.dotMeta = new(mocks.IDotMeta)
 	suite.settings = new(mocks.ISettings)
 	suite.template = new(mocks.ITemplate)
-	suite.develop = meta.NewDevelop(suite.util, suite.runner, suite.dotMeta, suite.settings, suite.template)
+	suite.develop = meta.NewDevelop(suite.util, suite.log, suite.runner, suite.dotMeta, suite.settings, suite.template)
 }
 
 func (suite *DevelopTest) TestInstall() {
@@ -51,6 +53,7 @@ func (suite *DevelopTest) TestEnter() {
 func (suite *DevelopTest) TestStage() {
 	metaYml := &meta.MetaYml{"name", "golang"}
 	suite.dotMeta.On("ReadMetaYml").Return(metaYml)
+	suite.log.On("Verbose", mock.Anything, mock.Anything)
 	languageYml := map[string][]string{"build": []string{"cmd1", "cmd2 {{.Name}}"}}
 	suite.settings.On("ReadLanguageYml", "golang").Return(&meta.LanguageYml{languageYml})
 	suite.template.On("ExecuteOnString", "cmd1", mock.Anything).Return("cmd1")

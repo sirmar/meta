@@ -17,14 +17,15 @@ type IDevelop interface {
 
 type Develop struct {
 	util     IUtil
+	log      ILog
 	runner   IRunner
 	dotMeta  IDotMeta
 	settings ISettings
 	template ITemplate
 }
 
-func NewDevelop(util IUtil, runner IRunner, dotMeta IDotMeta, settings ISettings, template ITemplate) IDevelop {
-	return &Develop{util, runner, dotMeta, settings, template}
+func NewDevelop(util IUtil, log ILog, runner IRunner, dotMeta IDotMeta, settings ISettings, template ITemplate) IDevelop {
+	return &Develop{util, log, runner, dotMeta, settings, template}
 }
 
 func (self *Develop) Install(noCache bool) {
@@ -43,8 +44,14 @@ func (self *Develop) Enter() {
 
 func (self *Develop) Stage(stage string, imageOnly bool) {
 	metaYml := self.dotMeta.ReadMetaYml()
+	self.log.Verbose("Running stage", stage)
 	for _, cmdTemplate := range self.settings.ReadLanguageYml(metaYml.Language).Stage(stage) {
 		cmd := self.template.ExecuteOnString(cmdTemplate, self.settings.Translation(metaYml))
+
+		self.log.Verbose(strings.Repeat("-", 70))
+		self.log.Verbose("| Running cmd:", cmd)
+		self.log.Verbose(strings.Repeat("-", 70))
+
 		parts := strings.Split(cmd, " ")
 		args := append(self.baseArgs(metaYml, imageOnly), parts...)
 		self.runner.Run("docker", args)

@@ -23,8 +23,53 @@ func (_m *ILog) Fatalf(format string, v ...interface{}) {
 	_m.Called(_ca...)
 }
 
+// IsQuiet provides a mock function with given fields:
+func (_m *ILog) IsQuiet() bool {
+	ret := _m.Called()
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func() bool); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// IsVerbose provides a mock function with given fields:
+func (_m *ILog) IsVerbose() bool {
+	ret := _m.Called()
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func() bool); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
 // Println provides a mock function with given fields: v
 func (_m *ILog) Println(v ...interface{}) {
+	var _ca []interface{}
+	_ca = append(_ca, v...)
+	_m.Called(_ca...)
+}
+
+// SetQuiet provides a mock function with given fields:
+func (_m *ILog) SetQuiet() {
+	_m.Called()
+}
+
+// SetVerbose provides a mock function with given fields:
+func (_m *ILog) SetVerbose() {
+	_m.Called()
+}
+
+// Verbose provides a mock function with given fields: v
+func (_m *ILog) Verbose(v ...interface{}) {
 	var _ca []interface{}
 	_ca = append(_ca, v...)
 	_m.Called(_ca...)

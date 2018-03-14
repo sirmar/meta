@@ -8,7 +8,9 @@ import (
 type CommandLine struct {
 	Help      bool     `short:"h" long:"help" description:"Display usage" global:"true"`
 	ImageOnly bool     `short:"i" long:"image-only" description:"Run based on docker image without using any volumes to see local changes" global:"true"`
-	Version   bool     `short:"v" long:"version" description:"Display version"`
+	Version   bool     `long:"version" description:"Display version"`
+	Verbose   bool     `short:"v" description:"Verbose output"`
+	Quiet   bool     `short:"q" description:"No logging"`
 	Setup     struct{} `command:"setup" description:"Setup up your meta configuration"`
 	Install   struct {
 		NoCache bool `short:"n" long:"no-cache" description:"Build without cache"`
@@ -80,12 +82,18 @@ func (self *Parser) Run() {
 		Description: "Unified interface for development",
 		Flags:       flags,
 		AutoHelp:    true,
-		AutoVersion: true,
+		AutoVersion: false,
 		AnyError:    true,
 	})
 
 	if err != nil {
 		self.log.Fatal(err)
+	}
+
+	if flags.Verbose {
+		self.log.SetVerbose()
+	} else if flags.Quiet {
+		self.log.SetQuiet()
 	}
 
 	if self.dotMetaIsRequired(cmd) {

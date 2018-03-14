@@ -23,9 +23,11 @@ func NewRunner(log ILog) IRunner {
 func (self *Runner) Run(command string, args []string) {
 	self.log.Println("Running:", command, strings.Join(args, " "))
 	cmd := exec.Command(command, args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stdin = os.Stdin
-	cmd.Stderr = os.Stderr
+	if !self.log.IsQuiet() {
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+	}
 	if err := cmd.Run(); err != nil {
 		self.log.Fatal(err)
 	}

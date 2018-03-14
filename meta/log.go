@@ -16,14 +16,44 @@ type ILog interface {
 	Fatal(v ...interface{})
 	Fatalf(format string, v ...interface{})
 	Println(v ...interface{})
+	Verbose(v ...interface{})
+	SetVerbose()
+	SetQuiet()
+	IsQuiet() bool
+	IsVerbose() bool
 }
 
-type Log struct{}
+type logMode int
+
+const (
+	LOG_NORMAL  logMode = 0
+	LOG_VERBOSE logMode = 1
+	LOG_QUIET   logMode = 2
+)
+
+type Log struct{
+	mode logMode
+}
 
 func NewLog() ILog {
 	log.SetFlags(0)
 	log.SetOutput(new(logWriter))
-	return &Log{}
+	return &Log{LOG_NORMAL}
+}
+
+func (self *Log) SetVerbose() {
+	self.mode = LOG_VERBOSE
+}
+func (self *Log) SetQuiet() {
+	self.mode = LOG_QUIET
+}
+
+func (self *Log) IsQuiet() bool {
+	return self.mode == LOG_QUIET
+}
+
+func (self *Log) IsVerbose() bool {
+	return self.mode == LOG_VERBOSE
 }
 
 func (self *Log) Fatal(v ...interface{}) {
@@ -35,5 +65,13 @@ func (self *Log) Fatalf(format string, v ...interface{}) {
 }
 
 func (self *Log) Println(v ...interface{}) {
-	log.Println(v...)
+	if !self.IsQuiet() {
+		log.Println(v...)
+	}
+}
+
+func (self *Log) Verbose(v ...interface{}) {
+	if self.IsVerbose() {
+		log.Println(v...)
+	}
 }
