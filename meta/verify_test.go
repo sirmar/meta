@@ -50,7 +50,7 @@ func (suite *VerifyTest) TestFileMissing() {
 	suite.givenRequirementOnFileWithContent("file", "")
 	suite.givenFileMissing("file")
 
-	suite.log.On("Println", "Missing file:", "file").Return()
+	suite.log.On("Println", "Missing file:", "file")
 	suite.verify.Files()
 	suite.log.AssertExpectations(suite.T())
 }
@@ -59,7 +59,7 @@ func (suite *VerifyTest) TestFileExistsButMissRequiredContent() {
 	suite.givenRequirementOnFileWithContent("file", "required content")
 	suite.givenFileWithContent("missing content")
 
-	suite.log.On("Println", "File", "file", "is missing content", "required content").Return()
+	suite.log.On("Println", "File", "file", "is missing content", "required content")
 	suite.verify.Files()
 	suite.log.AssertExpectations(suite.T()) // No logs
 }

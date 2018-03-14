@@ -34,7 +34,7 @@ func (suite *SettingsTest) TestReadSettingsYml() {
 }
 
 func (suite *SettingsTest) TestWriteSettingsYml() {
-	suite.util.On("WriteYml", "~/.meta/settings.yml", mock.Anything).Return()
+	suite.util.On("WriteYml", "~/.meta/settings.yml", mock.Anything)
 	suite.settings.WriteSettingsYml(SettingsYmlMock())
 	suite.util.AssertExpectations(suite.T())
 }

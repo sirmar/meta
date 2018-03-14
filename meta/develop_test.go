@@ -31,21 +31,21 @@ func (suite *DevelopTest) SetupTest() {
 
 func (suite *DevelopTest) TestInstall() {
 	suite.dotMeta.On("ReadMetaYml").Return(MetaYmlMock())
-	suite.runner.On("Run", "docker", contains("build . --tag name")).Return()
+	suite.runner.On("Run", "docker", contains("build . --tag name"))
 	suite.develop.Install(false)
 	suite.runner.AssertExpectations(suite.T())
 }
 
 func (suite *DevelopTest) TestInstallNoCache() {
 	suite.dotMeta.On("ReadMetaYml").Return(MetaYmlMock())
-	suite.runner.On("Run", "docker", contains("build . --no-cache --tag name")).Return()
+	suite.runner.On("Run", "docker", contains("build . --no-cache --tag name"))
 	suite.develop.Install(true)
 	suite.runner.AssertExpectations(suite.T())
 }
 
 func (suite *DevelopTest) TestEnter() {
 	suite.dotMeta.On("ReadMetaYml").Return(MetaYmlMock())
-	suite.runner.On("Run", "docker", contains("run -it name sh")).Return()
+	suite.runner.On("Run", "docker", contains("run -it name sh"))
 	suite.develop.Enter()
 	suite.runner.AssertExpectations(suite.T())
 }
@@ -60,8 +60,8 @@ func (suite *DevelopTest) TestStage() {
 	suite.template.On("ExecuteOnString", "cmd2 {{.Name}}", mock.Anything).Return("cmd2")
 	suite.settings.On("Translation", metaYml).Return(&meta.Translation{*SettingsYmlMock(), *metaYml})
 
-	suite.runner.On("Run", "docker", contains("run name cmd1")).Return()
-	suite.runner.On("Run", "docker", contains("run name cmd2")).Return()
+	suite.runner.On("Run", "docker", contains("run name cmd1"))
+	suite.runner.On("Run", "docker", contains("run name cmd2"))
 	suite.develop.Stage("build", true)
 	suite.runner.AssertExpectations(suite.T())
 }
@@ -77,7 +77,7 @@ func (suite *DevelopTest) TestUpload() {
 
 func (suite *DevelopTest) TestLogin() {
 	suite.settings.On("ReadSettingsYml").Return(SettingsYmlMock())
-	suite.runner.On("Run", "docker", contains("login -u user url")).Return()
+	suite.runner.On("Run", "docker", contains("login -u user url"))
 	suite.develop.Login()
 	suite.runner.AssertExpectations(suite.T())
 }
@@ -85,7 +85,7 @@ func (suite *DevelopTest) TestLogin() {
 func (suite *DevelopTest) TestRunInGolang() {
 	suite.dotMeta.On("ReadMetaYml").Return(&meta.MetaYml{"name", "golang"})
 	suite.util.On("GetCwd").Return("/root")
-	suite.runner.On("Run", "docker", contains("run -v /root:/go/src/name name go build")).Return()
+	suite.runner.On("Run", "docker", contains("run -v /root:/go/src/name name go build"))
 	suite.develop.Run([]string{"go", "build"}, false)
 	suite.runner.AssertExpectations(suite.T())
 }
@@ -93,14 +93,14 @@ func (suite *DevelopTest) TestRunInGolang() {
 func (suite *DevelopTest) TestRunInOtherLanguages() {
 	suite.dotMeta.On("ReadMetaYml").Return(&meta.MetaYml{"name", "python"})
 	suite.util.On("GetCwd").Return("/root")
-	suite.runner.On("Run", "docker", contains("run -v /root:/usr/src/name name cmd")).Return()
+	suite.runner.On("Run", "docker", contains("run -v /root:/usr/src/name name cmd"))
 	suite.develop.Run([]string{"cmd"}, false)
 	suite.runner.AssertExpectations(suite.T())
 }
 
 func (suite *DevelopTest) TestRunWithImageOnly() {
 	suite.dotMeta.On("ReadMetaYml").Return(MetaYmlMock())
-	suite.runner.On("Run", "docker", contains("run name cmd")).Return()
+	suite.runner.On("Run", "docker", contains("run name cmd"))
 	suite.develop.Run([]string{"cmd"}, true)
 	suite.runner.AssertExpectations(suite.T())
 }

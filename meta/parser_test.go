@@ -24,7 +24,7 @@ type ParserTest struct {
 
 func (suite *ParserTest) SetupTest() {
 	suite.dotMeta = new(mocks.IDotMeta)
-	suite.dotMeta.On("MoveToRoot").Return()
+	suite.dotMeta.On("MoveToRoot")
 	suite.log = new(mocks.ILog)
 	suite.develop = new(mocks.IDevelop)
 	suite.create = new(mocks.ICreate)

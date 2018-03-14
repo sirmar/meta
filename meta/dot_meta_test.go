@@ -35,7 +35,7 @@ func (suite *DotMetaTest) TestMoveToRootFindsRoot() {
 	suite.util.On("Exists", "/current/dir/.meta/meta.yml").Return(false)
 	suite.util.On("Exists", "/current/.meta/meta.yml").Return(true)
 
-	suite.util.On("ChangeDir", "/current").Return()
+	suite.util.On("ChangeDir", "/current")
 	suite.dotMeta.MoveToRoot()
 	suite.util.AssertExpectations(suite.T())
 }
