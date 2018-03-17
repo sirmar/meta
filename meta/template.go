@@ -13,7 +13,7 @@ type ITemplate interface {
 
 type Template struct {
 	util IUtil
-	log ILog
+	log  ILog
 }
 
 func NewTemplate(util IUtil, log ILog) ITemplate {

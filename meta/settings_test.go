@@ -18,6 +18,17 @@ func SettingsYmlMock() *meta.SettingsYml {
 	return &meta.SettingsYml{"author", "email", "url", "namespace", "user"}
 }
 
+func LanguageYmlMock() *meta.LanguageYml {
+	return &meta.LanguageYml{
+		map[string][]string{"build": []string{"build cmd"}},
+		[]string{"/root:/usr/src/name"},
+	}
+}
+
+func TranslationMock() *meta.Translation {
+	return &meta.Translation{*SettingsYmlMock(), *MetaYmlMock(), "/root"}
+}
+
 func (suite *SettingsTest) SetupTest() {
 	suite.util = new(mocks.IUtil)
 	suite.settings = meta.NewSettings(suite.util)
@@ -47,15 +58,15 @@ func (suite *SettingsTest) TestReadVerifyYml() {
 }
 
 func (suite *SettingsTest) TestReadLanguageYml() {
-	content := map[string][]string{"build": []string{"build cmd"}}
-	suite.util.On("ReadYml", "~/.meta/golang.yml", mock.Anything).Return(&meta.LanguageYml{content})
+	suite.util.On("ReadYml", "~/.meta/golang.yml", mock.Anything).Return(LanguageYmlMock())
 	languageYml := suite.settings.ReadLanguageYml("golang")
 	suite.Equal([]string{"build cmd"}, languageYml.Stage("build"))
 }
 
 func (suite *SettingsTest) TestTranslation() {
+	suite.util.On("GetCwd").Return("/root")
 	suite.util.On("ReadYml", "~/.meta/settings.yml", mock.Anything).Return(SettingsYmlMock())
-	translation := suite.settings.Translation(MetaYmlMock()).(*meta.Translation)
+	translation := suite.settings.Translation(MetaYmlMock())
 	suite.Equal("author", translation.Author)
 	suite.Equal("email", translation.Email)
 	suite.Equal("url", translation.DockerRegistry)

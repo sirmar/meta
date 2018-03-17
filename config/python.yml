@@ -11,3 +11,7 @@ stages:
   ci:
     - flake8 setup.py test {{.Name}}
     - nosetests --with-coverage test
+
+volumes:
+  - "{{.Root}}/{{.Name}}:/usr/src/{{.Name}}/{{.Name}}"
+  - "{{.Root}}/test:/usr/src/{{.Name}}/test"

@@ -42,7 +42,7 @@ func (suite *CreateTest) TestFilePathAndContentWillBeTemplateExpanded() {
 }
 
 func (suite *CreateTest) givenTranslation() {
-	suite.settings.On("Translation", MetaYmlMock()).Return(&meta.Translation{*SettingsYmlMock(), *MetaYmlMock()})
+	suite.settings.On("Translation", MetaYmlMock()).Return(TranslationMock())
 }
 
 func (suite *CreateTest) givenDirectory() {

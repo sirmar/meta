@@ -11,3 +11,9 @@ RUN pip install --no-cache-dir nose coverage flake8
 # Python production dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+COPY setup.py .
+RUN pip install --no-cache-dir -e .
+
+# Python source
+COPY . .

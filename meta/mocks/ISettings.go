@@ -58,15 +58,15 @@ func (_m *ISettings) ReadVerifyYml() *meta.VerifyYml {
 }
 
 // Translation provides a mock function with given fields: metaYml
-func (_m *ISettings) Translation(metaYml *meta.MetaYml) interface{} {
+func (_m *ISettings) Translation(metaYml *meta.MetaYml) *meta.Translation {
 	ret := _m.Called(metaYml)
 
-	var r0 interface{}
-	if rf, ok := ret.Get(0).(func(*meta.MetaYml) interface{}); ok {
+	var r0 *meta.Translation
+	if rf, ok := ret.Get(0).(func(*meta.MetaYml) *meta.Translation); ok {
 		r0 = rf(metaYml)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(interface{})
+			r0 = ret.Get(0).(*meta.Translation)
 		}
 	}
 

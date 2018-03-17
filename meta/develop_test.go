@@ -51,17 +51,13 @@ func (suite *DevelopTest) TestEnter() {
 }
 
 func (suite *DevelopTest) TestStage() {
-	metaYml := &meta.MetaYml{"name", "golang"}
-	suite.dotMeta.On("ReadMetaYml").Return(metaYml)
+	suite.dotMeta.On("ReadMetaYml").Return(MetaYmlMock())
 	suite.log.On("Verbose", mock.Anything, mock.Anything)
-	languageYml := map[string][]string{"build": []string{"cmd1", "cmd2 {{.Name}}"}}
-	suite.settings.On("ReadLanguageYml", "golang").Return(&meta.LanguageYml{languageYml})
-	suite.template.On("ExecuteOnString", "cmd1", mock.Anything).Return("cmd1")
-	suite.template.On("ExecuteOnString", "cmd2 {{.Name}}", mock.Anything).Return("cmd2")
-	suite.settings.On("Translation", metaYml).Return(&meta.Translation{*SettingsYmlMock(), *metaYml})
+	suite.settings.On("ReadLanguageYml", "language").Return(LanguageYmlMock())
+	suite.template.On("ExecuteOnString", "build cmd", mock.Anything).Return("build cmd")
+	suite.settings.On("Translation", mock.Anything).Return(TranslationMock())
 
-	suite.runner.On("Run", "docker", contains("run name cmd1"))
-	suite.runner.On("Run", "docker", contains("run name cmd2"))
+	suite.runner.On("Run", "docker", contains("run name build cmd"))
 	suite.develop.Stage("build", true)
 	suite.runner.AssertExpectations(suite.T())
 }
@@ -82,17 +78,11 @@ func (suite *DevelopTest) TestLogin() {
 	suite.runner.AssertExpectations(suite.T())
 }
 
-func (suite *DevelopTest) TestRunInGolang() {
-	suite.dotMeta.On("ReadMetaYml").Return(&meta.MetaYml{"name", "golang"})
-	suite.util.On("GetCwd").Return("/root")
-	suite.runner.On("Run", "docker", contains("run -v /root:/go/src/name name go build"))
-	suite.develop.Run([]string{"go", "build"}, false)
-	suite.runner.AssertExpectations(suite.T())
-}
-
-func (suite *DevelopTest) TestRunInOtherLanguages() {
-	suite.dotMeta.On("ReadMetaYml").Return(&meta.MetaYml{"name", "python"})
-	suite.util.On("GetCwd").Return("/root")
+func (suite *DevelopTest) TestRun() {
+	suite.dotMeta.On("ReadMetaYml").Return(MetaYmlMock())
+	suite.settings.On("ReadLanguageYml", "language").Return(LanguageYmlMock())
+	suite.settings.On("Translation", mock.Anything).Return(TranslationMock())
+	suite.template.On("ExecuteOnString", "/root:/usr/src/name", mock.Anything).Return("/root:/usr/src/name")
 	suite.runner.On("Run", "docker", contains("run -v /root:/usr/src/name name cmd"))
 	suite.develop.Run([]string{"cmd"}, false)
 	suite.runner.AssertExpectations(suite.T())

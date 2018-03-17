@@ -45,6 +45,7 @@ func (self *Develop) Enter() {
 func (self *Develop) Stage(stage string, imageOnly bool) {
 	metaYml := self.dotMeta.ReadMetaYml()
 	self.log.Verbose("Running stage", stage)
+
 	for _, cmdTemplate := range self.settings.ReadLanguageYml(metaYml.Language).Stage(stage) {
 		cmd := self.template.ExecuteOnString(cmdTemplate, self.settings.Translation(metaYml))
 
@@ -71,22 +72,21 @@ func (self *Develop) Run(args []string, imageOnly bool) {
 	self.runner.Run("docker", append(self.baseArgs(metaYml, imageOnly), args...))
 }
 
+func (self *Develop) Login() {
+	settingsYml := self.settings.ReadSettingsYml()
+	self.runner.Run("docker", []string{"login", "-u", settingsYml.DockerUser, settingsYml.DockerRegistry})
+}
+
 func (self *Develop) baseArgs(metaYml *MetaYml, imageOnly bool) []string {
 	if imageOnly {
 		return []string{"run", metaYml.Name}
 	}
-	return []string{"run", "-v", self.volume(metaYml), metaYml.Name}
-}
 
-func (self *Develop) volume(metaYml *MetaYml) string {
-	root := self.util.GetCwd()
-	if metaYml.Language == "golang" {
-		return fmt.Sprintf("%s:/go/src/%s", root, metaYml.Name)
+	args := []string{"run"}
+	translation := self.settings.Translation(metaYml)
+	for _, volume := range self.settings.ReadLanguageYml(metaYml.Language).Volumes {
+		args = append(args, "-v", self.template.ExecuteOnString(volume, translation))
 	}
-	return fmt.Sprintf("%s:/usr/src/%s", root, metaYml.Name)
-}
-
-func (self *Develop) Login() {
-	settingsYml := self.settings.ReadSettingsYml()
-	self.runner.Run("docker", []string{"login", "-u", settingsYml.DockerUser, settingsYml.DockerRegistry})
+	args = append(args, metaYml.Name)
+	return args
 }

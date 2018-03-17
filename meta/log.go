@@ -31,7 +31,7 @@ const (
 	LOG_QUIET   logMode = 2
 )
 
-type Log struct{
+type Log struct {
 	mode logMode
 }
 

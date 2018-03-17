@@ -10,7 +10,7 @@ type CommandLine struct {
 	ImageOnly bool     `short:"i" long:"image-only" description:"Run based on docker image without using any volumes to see local changes" global:"true"`
 	Version   bool     `long:"version" description:"Display version"`
 	Verbose   bool     `short:"v" description:"Verbose output"`
-	Quiet   bool     `short:"q" description:"No logging"`
+	Quiet     bool     `short:"q" description:"No logging"`
 	Setup     struct{} `command:"setup" description:"Setup up your meta configuration"`
 	Install   struct {
 		NoCache bool `short:"n" long:"no-cache" description:"Build without cache"`

@@ -17,12 +17,14 @@ type VerifyYml struct {
 }
 
 type LanguageYml struct {
-	Stages map[string][]string `yaml:"stages,flow"`
+	Stages  map[string][]string `yaml:"stages,flow"`
+	Volumes []string            `yaml:"volumes,flow"`
 }
 
 type Translation struct {
 	SettingsYml
 	MetaYml
+	Root string
 }
 
 func (self *LanguageYml) Stage(stage string) []string {
@@ -36,7 +38,7 @@ type ISettings interface {
 	ReadSettingsYml() *SettingsYml
 	ReadVerifyYml() *VerifyYml
 	ReadLanguageYml(language string) *LanguageYml
-	Translation(metaYml *MetaYml) interface{}
+	Translation(metaYml *MetaYml) *Translation
 }
 
 type Settings struct {
@@ -60,8 +62,8 @@ func (self *Settings) ReadLanguageYml(language string) *LanguageYml {
 	return self.util.ReadYml(path, new(LanguageYml)).(*LanguageYml)
 }
 
-func (self *Settings) Translation(metaYml *MetaYml) interface{} {
-	return &Translation{*self.ReadSettingsYml(), *metaYml}
+func (self *Settings) Translation(metaYml *MetaYml) *Translation {
+	return &Translation{*self.ReadSettingsYml(), *metaYml, self.util.GetCwd()}
 }
 
 func (self *Settings) WriteSettingsYml(settingsYml *SettingsYml) {

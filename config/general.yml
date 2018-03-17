@@ -3,3 +3,6 @@ stages:
     - ./test.sh
   ci:
     - ./test.sh
+
+volumes:
+  - "{{.Root}}:/usr/src/{{.Name}}"
